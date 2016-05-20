@@ -1,2 +1,2 @@
-# Bitcraft-Core
-The Core Framework
+# Bitcraft Core (BCC)
+The Core Development Framework for the Bitcraft Module Library
