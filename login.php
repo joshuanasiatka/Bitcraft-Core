@@ -6,7 +6,7 @@ if(isset($_POST['submit'])) {
 
    if($authenticator->Login()) {
       $authenticator->RedirectToURL("index.php");
-   } 
+   }
    else {
     $error .= "<button type='button' class='close' data-dismiss='alert'>x</button>";
     $error .= $authenticator->getErrorMessage() . '</div>';
@@ -21,6 +21,13 @@ if(isset($_POST['submitted_pass']))
         $authenticator->RedirectToURL("reset-pwd-link-sent.html");
         exit;
    }
+}
+
+if (isset($_GET['logout'])) {
+  $error = '<div class="alert alert-success alert-dismissable" id="error">';
+  $authenticator->LogOut();
+  $error .= "<button type='button' class='close' data-dismiss='alert'>x</button>";
+  $error .= "You have successfully logged out" . '</div>';
 }
 ?>
 <!DOCTYPE html>
@@ -115,7 +122,7 @@ if ($conf['customize']['darkmode'] == 'dark') {
     </div>
   </div>
 
-    
+
     <!-- jQuery -->
     <script src="bower/jquery/dist/jquery.min.js"></script>
     <!-- Bootstrap -->
