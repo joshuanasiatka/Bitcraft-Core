@@ -1,7 +1,6 @@
 <?PHP
 require_once("class.phpmailer.php");
-class Authenticator
-{
+class Authenticator {
     var $admin_email;
     var $from_address;
     var $username;
@@ -12,65 +11,52 @@ class Authenticator
     var $rand_key;
     var $error_message;
     //-----Initialization -------
-    function Authenticator()
-    {
+    function Authenticator() {
         $this->sitename = '';
         $this->rand_key = '0iQx5oBk66oVZep';
     }
-    function InitDB($host,$uname,$pwd,$database,$auth_table)
-    {
+    function InitDB($host,$uname,$pwd,$database,$auth_table) {
         $this->db_host      = $host;
         $this->username     = $uname;
         $this->pwd          = $pwd;
         $this->database     = $database;
         $this->tablename    = $auth_table;
     }
-    function SetAdminEmail($email)
-    {
+    function SetAdminEmail($email) {
         $this->admin_email = $email;
     }
-    function SetWebsiteName($sitename)
-    {
+    function SetWebsiteName($sitename) {
         $this->sitename = $sitename;
     }
-    function SetRandomKey($key)
-    {
+    function SetRandomKey($key) {
         $this->rand_key = $key;
     }
     //-------Main Operations ----------------------
-    function RegisterUser()
-    {
-        if(!isset($_POST['submitted']))
-        {
+    function RegisterUser() {
+        if(!isset($_POST['submitted'])) {
            return false;
         }
         $formvars = array();
-        if(!$this->ValidateRegistrationSubmission())
-        {
+        if(!$this->ValidateRegistrationSubmission()) {
             return false;
         }
         $this->CollectRegistrationSubmission($formvars);
-        if(!$this->SaveToDatabase($formvars))
-        {
+        if(!$this->SaveToDatabase($formvars)) {     
             return false;
         }
-        if(!$this->SendUserConfirmationEmail($formvars))
-        {
+        if(!$this->SendUserConfirmationEmail($formvars)) {
             return false;
         }
         $this->SendAdminIntimationEmail($formvars);
         return true;
     }
-    function ConfirmUser()
-    {
-        if(empty($_GET['code'])||strlen($_GET['code'])<=10)
-        {
+    function ConfirmUser() {
+        if(empty($_GET['code'])||strlen($_GET['code'])<=10) {
             $this->HandleError("Please provide the confirm code");
             return false;
         }
         $user_rec = array();
-        if(!$this->UpdateDBRecForConfirmation($user_rec))
-        {
+        if(!$this->UpdateDBRecForConfirmation($user_rec)) {
             return false;
         }
         $this->SendUserWelcomeEmail($user_rec);

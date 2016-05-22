@@ -78,7 +78,7 @@ if ($conf['customize']['darkmode'] == 'dark') {
           <!--<span><a href="javascript:;" data-toggle="modal" data-target="#help">Need help?</a></span>-->
           <span><a href="javascript:;" data-toggle="modal" data-target="#forgot">Forgot Password?</a></span>
       </div>
-      <p class="copyright <?=$darktext?>"><br />powered by <a href='http://itsm.bitcraftlabs.net' target="_blank"><?=$app_name?></a></p>
+      <p class="copyright <?=$darktext?>"><br />powered by <a href='http://bitcraftlabs.net' target="_blank"><?=$app_name?></a></p>
     </form>
   </div>
 

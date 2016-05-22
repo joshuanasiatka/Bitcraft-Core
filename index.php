@@ -1,3 +1,4 @@
+<?php ini_set("display_errors", true); ?>
 <!DOCTYPE html>
 <!--
 Project:    Bitcraft Core
@@ -8,7 +9,6 @@ Status:     Still in [Alpha] Development
 -->
 <?php
   include("modules/mainhead.php");
-  //redirect per certain permissions
 ?>
 <html>
 <?php
