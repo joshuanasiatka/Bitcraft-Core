@@ -51,6 +51,24 @@ if ( !class_exists( 'DALi' ) ) {
         return $result;
       }
     }
+
+    public function getUsers() {
+      $sql = "SELECT id, fname, lname, email
+              FROM users
+              JOIN user_roles
+              WHERE users.id = user_roles.userID AND user_roles.roleID <> '2'
+              GROUP BY id";
+      return $this->query($sql);
+    }
+
+    public function getPersonInfo($name){
+      if ($name == 'all') {
+          $sql = "SELECT * FROM users ORDER BY lname ASC";
+      } else {
+        $sql = "SELECT * FROM users WHERE id = '$name'";
+      }
+      return $this->query($sql);
+    }
   }
 }
 ?>

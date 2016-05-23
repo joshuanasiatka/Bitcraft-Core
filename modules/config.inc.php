@@ -103,7 +103,7 @@ if (file_exists("$path2/custom/config.php")) {
 
 /* ------------- APP NAME, VERSION NUMBER, ETC. ------------ */
 $app_name = "Bitcraft Core";
-$app_name_short = "BCC";
+$app_name_short = "CoreUI";
 $app_version = "0.0.3";
 
 /* Sets the title in the header. This is what the page will be named by default when you

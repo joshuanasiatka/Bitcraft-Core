@@ -1,5 +1,5 @@
 <?php
-if ($myACL->hasPermission('manage_users') != true) {
+if ($myACL->hasPermission('super_admin') != true) {
 	echo "UNAUTHORIZED!";
 } else {
 	include_once 'modules/admin/modals.php';
@@ -10,7 +10,7 @@ if ($myACL->hasPermission('manage_users') != true) {
  			  $adminhsub = '<small>'.$adminsub.'</small>';
 		?>
 			  <h2 class="skew-up-smidge"><?= $adminsub ?></h2>
-				<?php $list = $dali->getHDUsers();?>
+				<?php $list = $dali->getUsers();?>
 				<table id="adm_acl" class="table table-striped table-hover">
 					<thead>
 					<?php $tabhead="

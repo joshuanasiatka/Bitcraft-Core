@@ -1,5 +1,5 @@
     <!-- welcome -->
-    <?php if(($myACL->hasPermission('access_admin')) || ($myACL->hasPermission('manage_users')) || ($myACL->hasPermission('manage_templates'))) {
+    <?php if ($myACL->hasPermission('super_admin')) {
       $admCurPage = $_GET['page'];
       $admSubPage = $_GET['subpage'];
       if ((!isset($admCurPage) || ($admCurPage == "cpanel")) && (!isset($admSubPage))) {

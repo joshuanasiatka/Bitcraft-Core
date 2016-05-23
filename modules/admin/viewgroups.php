@@ -1,5 +1,5 @@
 <?php
-if ($myACL->hasPermission('manage_users') != true) {
+if ($myACL->hasPermission('super_admin') != true) {
 	echo "UNAUTHORIZED!";
 } else {
 	include_once 'modules/admin/modals.php';
