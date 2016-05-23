@@ -46,7 +46,7 @@ if ( !class_exists( 'DALi' ) ) {
 
     public function loadSetting($setting) {
       if ($setting == "maintenance") {
-        $sql = "SELECT * FROM admin_settings WHERE setting='maintenance'";
+        $sql = "SELECT * FROM core_admin_settings WHERE setting='maintenance'";
         $result = $this->query($sql);
         return $result;
       }

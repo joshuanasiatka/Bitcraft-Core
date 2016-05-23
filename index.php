@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <!--
 Project:    Bitcraft Core
-Lead Devs:  Joshua Nasiatka, Eugene Duffy
+Lead Devs:  Joshua Nasiatka, Eugene Duffy, Allen Perry
 For:        Bitcraft Labs
 Dev Date:   2016
 Status:     Still in [Alpha] Development
@@ -12,6 +12,7 @@ Status:     Still in [Alpha] Development
 ?>
 <html>
 <?php
-include_once 'modules/head.php'; ?>
+include_once 'modules/head.php'; 
+?>
 <body></body>
 </html>

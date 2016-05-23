@@ -19,7 +19,7 @@ $authenticator->InitDB(/*hostname*/  $conf['sql']['host'], //$db_hostname,
 					  /*username*/   $conf['sql']['user'], //$db_username,
 					  /*password*/   $conf['sql']['pass'], //$db_password,
 					  /*database*/   $conf['sql']['name'], //$db_name,
-					  /*table name*/ 'users');
+					  /*table name*/ 'core_users');
 
 //For better security. Get a random string from this link: http://tinyurl.com/randstr
 // and put it here

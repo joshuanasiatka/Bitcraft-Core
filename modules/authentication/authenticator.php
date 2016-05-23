@@ -63,13 +63,11 @@ class Authenticator {
         $this->SendAdminIntimationOnRegComplete($user_rec);
         return true;
     }
-    function Login()
-    {
+    function Login() {
         $username = trim($_POST['username']);
         $password = trim($_POST['password']);
         if(!isset($_SESSION)){ session_start(); }
-        if(!$this->CheckLoginInDB($username,$password))
-        {
+        if(!$this->CheckLoginInDB($username,$password)) {
             return false;
         }
         $_SESSION[$this->GetLoginSessionVar()] = $username;
@@ -84,185 +82,147 @@ class Authenticator {
         }
         return true;
     }
-    function CheckLogin()
-    {
+    function CheckLogin() {
          if(!isset($_SESSION)){ session_start(); }
          $sessionvar = $this->GetLoginSessionVar();
-         if(empty($_SESSION[$sessionvar]))
-         {
+         if(empty($_SESSION[$sessionvar])) {
             return false;
          }
          return true;
     }
-    function UserFullName()
-    {
+    function UserFullName() {
         return isset($_SESSION['name_of_user'])?$_SESSION['name_of_user']:'';
     }
-    function UserFirstName()
-    {
+    function UserFirstName() {
         return isset($_SESSION['first_name'])?$_SESSION['first_name']:'';
     }
-    function UserLastName()
-    {
+    function UserLastName() {
         return isset($_SESSION['last_name'])?$_SESSION['last_name']:'';
     }
-    function UserEmail()
-    {
+    function UserEmail() {
         return isset($_SESSION['email_of_user'])?$_SESSION['email_of_user']:'';
     }
-    function LogOut()
-    {
+    function LogOut() {
         session_start();
         $sessionvar = $this->GetLoginSessionVar();
         $_SESSION[$sessionvar]=NULL;
         unset($_SESSION[$sessionvar]);
     }
-    function EmailResetPasswordLink()
-    {
-        if(empty($_POST['email']))
-        {
+    function EmailResetPasswordLink() {
+        if(empty($_POST['email'])) {
             $this->HandleError("Email is empty!");
             return false;
         }
         $user_rec = array();
-        if(false === $this->GetUserFromEmail($_POST['email'], $user_rec))
-        {
+        if(false === $this->GetUserFromEmail($_POST['email'], $user_rec)) {
             return false;
         }
-        if(false === $this->SendResetPasswordLink($user_rec))
-        {
+        if(false === $this->SendResetPasswordLink($user_rec)) {
             return false;
         }
         return true;
     }
-    function ResetPassword()
-    {
-        if(empty($_GET['email']))
-        {
+    function ResetPassword() {
+        if(empty($_GET['email'])) {
             $this->HandleError("Email is empty!");
             return false;
         }
-        if(empty($_GET['code']))
-        {
+        if(empty($_GET['code'])) {
             $this->HandleError("reset code is empty!");
             return false;
         }
         $email = trim($_GET['email']);
         $code = trim($_GET['code']);
-        if($this->GetResetPasswordCode($email) != $code)
-        {
+        if($this->GetResetPasswordCode($email) != $code) {
             $this->HandleError("Bad reset code!");
             return false;
         }
         $user_rec = array();
-        if(!$this->GetUserFromEmail($email,$user_rec))
-        {
+        if(!$this->GetUserFromEmail($email,$user_rec)) {
             return false;
         }
         $new_password = $this->ResetUserPasswordInDB($user_rec);
-        if(false === $new_password || empty($new_password))
-        {
+        if(false === $new_password || empty($new_password)) {
             $this->HandleError("Error updating new password");
             return false;
         }
-        if(false == $this->SendNewPassword($user_rec,$new_password))
-        {
+        if(false == $this->SendNewPassword($user_rec,$new_password)) {
             $this->HandleError("Error sending new password");
             return false;
         }
         return true;
     }
-    function ChangePassword()
-    {
-        if(!$this->CheckLogin())
-        {
+    function ChangePassword() {
+        if(!$this->CheckLogin()) {
             $this->HandleError("Not logged in!");
             return false;
         }
-        if(empty($_POST['oldpwd']))
-        {
+        if(empty($_POST['oldpwd'])) {
             $this->HandleError("Old password is empty!");
             return false;
         }
-        if(empty($_POST['newpwd']))
-        {
+        if(empty($_POST['newpwd'])) {
             $this->HandleError("New password is empty!");
             return false;
         }
         $user_rec = array();
-        if(!$this->GetUserFromEmail($this->UserEmail(),$user_rec))
-        {
+        if(!$this->GetUserFromEmail($this->UserEmail(),$user_rec)) {
             return false;
         }
         $pwd = trim($_POST['oldpwd']);
         $salt = $user_rec['salt'];
         $hash = $this->checkhashSSHA($salt, $pwd);
-        if($user_rec['password'] != $hash)
-        {
+        if($user_rec['password'] != $hash) {
             $this->HandleError("The old password does not match!");
             return false;
         }
         $newpwd = trim($_POST['newpwd']);
-        if(!$this->ChangePasswordInDB($user_rec, $newpwd))
-        {
+        if(!$this->ChangePasswordInDB($user_rec, $newpwd)) {
             return false;
         }
         return true;
     }
     //-------Public Helper functions -------------
-    function GetSelfScript()
-    {
+    function GetSelfScript() {
         return htmlentities($_SERVER['PHP_SELF']);
     }
-    function SafeDisplay($value_name)
-    {
-        if(empty($_POST[$value_name]))
-        {
+    function SafeDisplay($value_name) {
+        if(empty($_POST[$value_name])) {
             return'';
         }
         return htmlentities($_POST[$value_name]);
     }
-    function RedirectToURL($url)
-    {
+    function RedirectToURL($url) {
         header("Location: $url");
         exit;
     }
-    function GetSpamTrapInputName()
-    {
+    function GetSpamTrapInputName() {
         return 'sp'.md5('KHGdnbvsgst'.$this->rand_key);
     }
-    function GetErrorMessage()
-    {
-        if(empty($this->error_message))
-        {
+    function GetErrorMessage() {
+        if(empty($this->error_message)) {
             return '';
         }
         $errormsg = nl2br(htmlentities($this->error_message));
         return $errormsg;
     }
     //-------Private Helper functions-----------
-    function HandleError($err)
-    {
+    function HandleError($err) {
         $this->error_message .= $err."\r\n";
     }
-    function HandleDBError($err)
-    {
+    function HandleDBError($err) {
         $this->HandleError($err."\r\n mysqlerror:".mysql_error());
     }
-    function GetFromAddress() //delete is completely revoked
-    {
-        if(!empty($this->from_address))
-        {
+    function GetFromAddress() {//delete is completely revoked {
+        if(!empty($this->from_address)) {
             return $this->from_address;
         }
         $host = $_SERVER['SERVER_NAME'];
         $from = "no-reply@$host";
         return $from;
     }
-    function GetFromAddress2()
-    {
-        if(!empty($this->from_address))
-        {
+    function GetFromAddress2() {
+        if(!empty($this->from_address)) {
             return $this->from_address;
         }
         $host = $_SERVER['SERVER_NAME'];
@@ -271,25 +231,21 @@ class Authenticator {
         $fromarr = array($from,$fromname);
         return $fromarr;
     }
-    function GetLoginSessionVar()
-    {
+    function GetLoginSessionVar() {
         $retvar = md5($this->rand_key);
         $retvar = 'usr_'.substr($retvar,0,10);
         return $retvar;
     }
     function ChangeAccessGroup($user) {
-        if(!$this->DBLogin())
-        {
+        if(!$this->DBLogin()) {
             $this->HandleError("Database login failed!");
             return false;
         }
         $nresult = mysql_query("UPDATE users SET type='".$_POST['access_level']."' WHERE id=$user", $this->connection) or die(mysql_error());
         return true;
     }
-    function CheckLoginInDB($username,$password)
-    {
-        if(!$this->DBLogin())
-        {
+    function CheckLoginInDB($username,$password) {
+        if(!$this->DBLogin()) {
             $this->HandleError("Database login failed!");
             return false;
         }
@@ -305,8 +261,7 @@ class Authenticator {
         }
         $qry = "Select * from $this->tablename where username='$username' and password='$hash' and confirmcode='y'";
         $result = mysql_query($qry,$this->connection);
-        if(!$result || mysql_num_rows($result) <= 0)
-        {
+        if(!$result || mysql_num_rows($result) <= 0) {
             $this->HandleError("Error logging in. The username and/or password is incorrect");
             return false;
         }
@@ -323,17 +278,14 @@ class Authenticator {
         $hash = base64_encode(sha1($password . $salt, true) . $salt);
         return $hash;
     }
-    function UpdateDBRecForConfirmation(&$user_rec)
-    {
-        if(!$this->DBLogin())
-        {
+    function UpdateDBRecForConfirmation(&$user_rec) {
+        if(!$this->DBLogin()) {
             $this->HandleError("Database login failed!");
             return false;
         }
         $confirmcode = $this->SanitizeForSQL($_GET['code']);
         $result = mysql_query("Select fname, lname, email from $this->tablename where confirmcode='$confirmcode'",$this->connection);
-        if(!$result || mysql_num_rows($result) <= 0)
-        {
+        if(!$result || mysql_num_rows($result) <= 0) {
             $this->HandleError("Wrong confirm code.");
             return false;
         }
@@ -342,55 +294,46 @@ class Authenticator {
         $user_rec['lname'] = $row['lname'];
         $user_rec['email']= $row['email'];
         $qry = "Update $this->tablename Set confirmcode='y' Where  confirmcode='$confirmcode'";
-        if(!mysql_query( $qry ,$this->connection))
-        {
+        if(!mysql_query( $qry ,$this->connection)) {
             $this->HandleDBError("Error inserting data to the table\nquery:$qry");
             return false;
         }
         return true;
     }
-    function ResetUserPasswordInDB($user_rec)
-    {
+    function ResetUserPasswordInDB($user_rec) {
         $new_password = substr(md5(uniqid()),0,10);
-        if(false == $this->ChangePasswordInDB($user_rec,$new_password))
-        {
+        if(false == $this->ChangePasswordInDB($user_rec,$new_password)) {
             return false;
         }
         return $new_password;
     }
-    function ChangePasswordInDB($user_rec, $newpwd)
-    {
+    function ChangePasswordInDB($user_rec, $newpwd) {
         $newpwd = $this->SanitizeForSQL($newpwd);
         $hash = $this->hashSSHA($newpwd);
         $new_password = $hash["encrypted"];
         $salt = $hash["salt"];
         $qry = "Update $this->tablename Set password='".$new_password."', salt='".$salt."' Where  id=".$_SESSION['userID']."";
-        if(!mysql_query( $qry ,$this->connection))
-        {
+        if(!mysql_query( $qry ,$this->connection)) {
             $this->HandleDBError("Error updating the password \nquery:$qry");
             return false;
         }
         return true;
     }
-    function GetUserFromEmail($email,&$user_rec)
-    {
-        if(!$this->DBLogin())
-        {
+    function GetUserFromEmail($email,&$user_rec) {
+        if(!$this->DBLogin()) {
             $this->HandleError("Database login failed!");
             return false;
         }
         $email = $this->SanitizeForSQL($email);
         $result = mysql_query("Select * from $this->tablename where email='$email'",$this->connection);
-        if(!$result || mysql_num_rows($result) <= 0)
-        {
+        if(!$result || mysql_num_rows($result) <= 0) {
             $this->HandleError("There is no user with email: $email");
             return false;
         }
         $user_rec = mysql_fetch_assoc($result);
         return true;
     }
-    function SendUserWelcomeEmail(&$user_rec)
-    {
+    function SendUserWelcomeEmail(&$user_rec) {
         $mailer = new PHPMailer();
         $mailer->CharSet = 'utf-8';
         $mailer->AddAddress($user_rec['email'],$user_rec['fname']);
@@ -404,17 +347,14 @@ class Authenticator {
         "Regards,\r\n".
         "Support\r\n".
         $this->sitename;
-        if(!$mailer->Send())
-        {
+        if(!$mailer->Send()) {
             $this->HandleError("Failed sending user welcome email.");
             return false;
         }
         return true;
     }
-    function SendAdminIntimationOnRegComplete(&$user_rec)
-    {
-        if(empty($this->admin_email))
-        {
+    function SendAdminIntimationOnRegComplete(&$user_rec) {
+        if(empty($this->admin_email)) {
             return false;
         }
         $mailer = new PHPMailer();
@@ -427,18 +367,15 @@ class Authenticator {
         $mailer->Body ="A new user registered at ".$this->sitename."\r\n".
         "Name: ".$user_rec['fname']." ".$user_rec['lname']."\r\n".
         "Email address: ".$user_rec['email']."\r\n";
-        if(!$mailer->Send())
-        {
+        if(!$mailer->Send()) {
             return false;
         }
         return true;
     }
-    function GetResetPasswordCode($email)
-    {
+    function GetResetPasswordCode($email) {
        return substr(md5($email.$this->sitename.$this->rand_key),0,10);
     }
-    function SendResetPasswordLink($user_rec)
-    {
+    function SendResetPasswordLink($user_rec) {
         $email = $user_rec['email'];
         $mailer = new PHPMailer();
         $mailer->CharSet = 'utf-8';
@@ -457,14 +394,12 @@ class Authenticator {
         "Regards,\r\n".
         "Support\r\n".
         $this->sitename;
-        if(!$mailer->Send())
-        {
+        if(!$mailer->Send()) {
             return false;
         }
         return true;
     }
-    function SendNewPassword($user_rec, $new_password)
-    {
+    function SendNewPassword($user_rec, $new_password) {
         $email = $user_rec['email'];
         $mailer = new PHPMailer();
         $mailer->CharSet = 'utf-8';
@@ -484,17 +419,14 @@ class Authenticator {
         "Regards,\r\n".
         "Support\r\n".
         $this->sitename;
-        if(!$mailer->Send())
-        {
+        if(!$mailer->Send()) {
             return false;
         }
         return true;
     }
-    function ValidateRegistrationSubmission()
-    {
+    function ValidateRegistrationSubmission() {
         //This is a hidden input field. Humans won't fill this field.
-        if(!empty($_POST[$this->GetSpamTrapInputName()]) )
-        {
+        if(!empty($_POST[$this->GetSpamTrapInputName()]) ) {
             //The proper error is not given intentionally
             $this->HandleError("Automated submission prevention: case 2 failed");
             return false;
@@ -505,12 +437,10 @@ class Authenticator {
         $validator->addValidation("email","email","The input for Email should be a valid email value");
         $validator->addValidation("email","req","Please fill in Email");
         $validator->addValidation("password","req","Please fill in Password");
-        if(!$validator->ValidateForm())
-        {
+        if(!$validator->ValidateForm()) {
             $error='';
             $error_hash = $validator->GetErrors();
-            foreach($error_hash as $inpname => $inp_err)
-            {
+            foreach($error_hash as $inpname => $inp_err) {
                 $error .= $inpname.':'.$inp_err."\n";
             }
             $this->HandleError($error);
@@ -518,16 +448,14 @@ class Authenticator {
         }
         return true;
     }
-    function CollectRegistrationSubmission(&$formvars)
-    {
+    function CollectRegistrationSubmission(&$formvars) {
         $formvars['fname'] = $this->Sanitize($_POST['fname']);
         $formvars['lname'] = $this->Sanitize($_POST['lname']);
         $formvars['username'] = $this->Sanitize($_POST['username']);
         $formvars['email'] = $this->Sanitize($_POST['email']);
         $formvars['password'] = $this->Sanitize($_POST['password']);
     }
-    function SendUserConfirmationEmail(&$formvars)
-    {
+    function SendUserConfirmationEmail(&$formvars) {
         $mailer = new PHPMailer();
         /* the DKIM Authenticator
            I have no idea if this works or if it will work.
@@ -554,29 +482,24 @@ class Authenticator {
         "Regards,\r\n".
         "Support\r\n".
         $this->sitename;
-        if(!$mailer->Send())
-        {
+        if(!$mailer->Send()) {
             $this->HandleError("Failed sending registration confirmation email.");
             return false;
         }
         return true;
     }
-    function GetAbsoluteURLFolder()
-    {
+    function GetAbsoluteURLFolder() {
         $scriptFolder = (isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS'] == 'on')) ? 'https://' : 'http://';
         $urldir ='';
         $pos = strrpos($_SERVER['REQUEST_URI'],'/');
-        if(false !==$pos)
-        {
+        if(false !==$pos) {
             $urldir = substr($_SERVER['REQUEST_URI'],0,$pos);
         }
         $scriptFolder .= $_SERVER['HTTP_HOST'].$urldir;
         return $scriptFolder;
     }
-    function SendAdminIntimationEmail(&$formvars)
-    {
-        if(empty($this->admin_email))
-        {
+    function SendAdminIntimationEmail(&$formvars) {
+        if(empty($this->admin_email)) {
             return false;
         }
         $mailer = new PHPMailer();
@@ -590,47 +513,38 @@ class Authenticator {
         "Name: ".$formvars['fname']." ".$formvars['lname']."\r\n".
         "Email address: ".$formvars['email']."\r\n".
         "UserName: ".$formvars['username'];
-        if(!$mailer->Send())
-        {
+        if(!$mailer->Send()) {
             return false;
         }
         return true;
     }
-    function SaveToDatabase(&$formvars)
-    {
-        if(!$this->DBLogin())
-        {
+    function SaveToDatabase(&$formvars) {
+        if(!$this->DBLogin()) {
             $this->HandleError("Database login failed!");
             return false;
         }
-        if(!$this->Ensuretable())
-        {
+        if(!$this->Ensuretable()) {
             return false;
         }
-        if(!$this->IsFieldUnique($formvars,'email'))
-        {
+        if(!$this->IsFieldUnique($formvars,'email')) {
             $this->HandleError("This email is already registered");
             return false;
         }
-        if(!$this->IsFieldUnique($formvars,'username'))
-        {
+        if(!$this->IsFieldUnique($formvars,'username')) {
             $this->HandleError("This UserName is already used. Please try another username");
             return false;
         }
-        if(!$this->InsertIntoDB($formvars))
-        {
+        if(!$this->InsertIntoDB($formvars)) {
             $this->HandleError("Inserting to Database failed!");
             return false;
         }
         return true;
     }
-    function IsFieldUnique($formvars,$fieldname)
-    {
+    function IsFieldUnique($formvars,$fieldname) {
         $field_val = $this->SanitizeForSQL($formvars[$fieldname]);
         $qry = "select username from $this->tablename where $fieldname='".$field_val."'";
         $result = mysql_query($qry,$this->connection);
-        if($result && mysql_num_rows($result) > 0)
-        {
+        if($result && mysql_num_rows($result) > 0) {
             return false;
         }
         return true;
