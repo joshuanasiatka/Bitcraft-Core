@@ -1,5 +1,5 @@
 <?php
-if (!($myACL->hasPermission('access_admin'))) {
+if (!($myACL->hasPermission('super_admin'))) {
 	echo "Unauthorized access!";
 }?>
 <div class="row">

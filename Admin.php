@@ -8,7 +8,7 @@ Status:     Staging; Idea Testing; Development
 -->
 <?php
   include("modules/mainhead.php");
-  if (!($myACL->hasPermission('access_admin')) && !($myACL->hasPermission('manage_templates')) && !($myACL->hasPermission('manage_users'))) {
+  if (!($myACL->hasPermission('super_admin'))) {
     header("location: /");
     exit;
   }
@@ -140,7 +140,7 @@ if (isset($_POST['action'])) {
   .on('drop', function(e) {
     droppedFiles = e.originalEvent.dataTransfer.files;
   });
-    } 
+    }
   </script>";
   } ?>
 

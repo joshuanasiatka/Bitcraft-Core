@@ -27,10 +27,7 @@
 				}
 			?>
 	</ol>
-	<!-- Main content -->
-	<!-- <section class="head-area">
-		<h2><i class="fa fa-exclamation-triangle"></i>&nbsp; &nbsp;Admin Area&nbsp; &nbsp;<i class="fa fa-exclamation-triangle"></i><br><small>Authorized Users Only</small></h2>
-	</section> -->
+
 	<section class="content">
 		<?php
 		$admin = new ADMIN();
