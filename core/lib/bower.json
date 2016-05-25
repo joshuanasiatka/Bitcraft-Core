@@ -1,18 +1,19 @@
 {
-  "name": "Bitcraft Service Desk",
+  "name": "bitcraft-core",
   "homepage": "https://itsm.bitcraftlabs.net",
   "authors": [
     "Joshua Nasiatka <joshua@bitcraftlabs.net>",
     "Gene Duffy <eugene@bitcraftlabs.net>",
     "Allen Perry <allen@bitcraftlabs.net"
   ],
-  "description": "An Open Source ITSM Web App",
+  "description": "PHP Development Framework for the Bitcraft Module Library",
   "main": "",
   "moduleType": [],
   "keywords": [
-    "itsm",
+    "mvc",
+    "php",
     "bootstrap",
-    "sengi"
+    "framework"
   ],
   "license": "MIT",
   "ignore": [
