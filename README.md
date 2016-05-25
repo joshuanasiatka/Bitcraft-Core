@@ -7,21 +7,3 @@ Any questions regarding this project, contact [support@bitcraftlabs.net](mailto:
 
 *Any issues with the code can be directed [here](https://github.com/bitcraft-labs/Bitcraft-Core/issues).*
 
-Installation
-------------
-There are two ways to install Bitcraft Service Desk.
-
-####Download:
-Download from [Github](https://github.com/bitcraft-labs/Bitcraft-Core/archive/master.zip) and upload to your web directory.
-
-####Using the Command Line:
-
-**Github**
-
-- Fork the repository
-- Clone to your machine/server
-```
-git clone https://github.com/YOUR_USERNAME/Bitcraft-Core.git
-bower install
-```
-
