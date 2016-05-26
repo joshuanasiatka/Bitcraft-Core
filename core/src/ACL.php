@@ -33,6 +33,7 @@
 					setcookie('remember_me', gone, $past);
 				}
 			}
+			$_COOKIE['session'] = $_SESSION;
 			return true;
 		}
 		/**
@@ -50,7 +51,7 @@
 	            ACL::HandleError("Error logging in. The username and/or password is incorrect");
 	            return false;
 	        }
-	        $_SESSION['userID']         = $result[0]['id'];
+	        $_SESSION['UserID']         = $result[0]['id'];
 	        $_SESSION['first_name']     = $result[0]['fname'];
 	        $_SESSION['last_name']      = $result[0]['lname'];
 	        $_SESSION['name_of_user']   = $result[0]['fname'] ." ". $result[0]['lname'];
@@ -93,8 +94,6 @@
 		 * @return
 		 */
 		public static function CheckLogin() {
-       if(!isset($_SESSION))
-						session_start();
        $sessionvar = ACL::GetLoginSessionVar();
        if(!isset($_SESSION['UserID']))
           return false;

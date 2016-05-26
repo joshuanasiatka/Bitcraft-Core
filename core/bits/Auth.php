@@ -23,9 +23,7 @@
      $error = '<div class="alert alert-danger alert-dismissable" id="error">';
      if (ACL::Login()) {
        printf("Successfully logged in!");
-       var_dump($_SESSION);
-      //  Anatomizer::SendTo("Core");
-      // return true;
+       Anatomizer::SendTo("Core");
      } else {
        $error .= "<button type='button' class='close' data-dismiss='alert'>x</button>";
        $error .= ACL::GetErrorMessage() . '</div>';

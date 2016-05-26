@@ -2,7 +2,6 @@
   /**
    * Doc
    */
-   var_dump($_SESSION);
    require_once 'core/skel/Anatomizer.php';
    require_once 'core/src/ACL.php';
    class CorePage extends Anatomizer {
@@ -15,11 +14,11 @@
        return $this->conf;
      }
    }
-   var_dump($_SESSION);
+
    $acl = new ACL();
    if (!$acl->CheckLogin()) {
-      // Anatomizer::SendTo("Login");
-      echo "FALSE!";
+      Anatomizer::SendTo("Login");
+      printf("ERROR: UNAUTHORIZED!");
    }
 
    $corepage = new CorePage();

@@ -20,9 +20,10 @@
      public function GatherNeeds() {
        session_start();
        Anatomizer::PublishCopyright();
-       if ((!isset($_SESSION['UserID'])) && ($this->REQUEST_URI !== "/Login/")) {
-         Anatomizer::SendTo('Login');
-       } else if ($this->REQUEST_URI == "/Login/") {
+      //  if ((!isset($_COOKIE['session'])) && ($this->REQUEST_URI !== "/Login/")) {
+      //    Anatomizer::SendTo('Login');
+      //  } else
+       if ($this->REQUEST_URI == "/Login/") {
          Anatomizer::AddLimb("Auth");
        } else if ($this->REQUEST_URI == "/Logout/") {
          ACL::Logout();
