@@ -1,0 +1,32 @@
+@import url('//fonts.googleapis.com/css?family=Open+Sans');
+html, body {
+	font-family: 'Open Sans';
+	height: 100%;
+}
+h1 {
+	font-size: 3.0em;
+	margin-bottom: 25px;
+	color: #fff;
+}
+.error-background {
+	background-color: #162955;
+	height: 93%;
+}
+.center {
+	width: 100%;
+	margin: 0 auto;
+	text-align: center;
+}
+.error-title {
+	font-size: 7.0em;
+	text-shadow: 1px 1px #999;
+	color: #fff;
+}
+p {	
+	margin-bottom: 50px;
+	text-shadow: 1px 1px #999;
+	color: #fff;
+}
+.btn-info {
+	margin-right: 40px;	
+}

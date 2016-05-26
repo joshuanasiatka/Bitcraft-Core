@@ -1,12 +1,11 @@
-<?php 
+<?php
 	/**
-	 * @internal 
+	 * @internal
 	 */
 	if (!class_exists('DALi')) {
 		/**
 		 * @uses Array from config.php file
 		 */
-		require_once '../cache/custom/config.php';
 		class DALi {
 			/**
 			 * @var $DB_HOST Initialized in Constructor
@@ -14,36 +13,42 @@
 			 * @var $DB_PASS Initialized in Constructor
 			 * @var $DB_NAME Initialized in Constructor
 			 */
-			private $DB_HOST;
-			private $DB_USER;
-			private $DB_PASS;
-			private $DB_NAME;
-			private $rand_key;
+		  private static $conf;
+			private static $DB_HOST;
+			private static $DB_USER;
+			private static $DB_PASS;
+			private static $DB_NAME;
+			private static $rand_key;
 			/**
 			 * @method Initializing connection variables
 			 */
 			public function __construct() {
-				$this->DB_HOST 	= $conf['sql']['host'];
-				$this->DB_USER 	= $conf['sql']['user'];
-				$this->DB_PASS 	= $conf['sql']['pass'];
-				$this->DB_NAME 	= $conf['sql']['name'];
-				$this->rand_key = $conf['security']['rand_key'];
+				DALi::init();
+			}
+
+ 			public static function init() {
+				require_once 'core/cache/custom/config.php';
+				DALi::$DB_HOST 	= $conf['sql']['host'];
+				DALi::$DB_USER 	= $conf['sql']['user'];
+				DALi::$DB_PASS 	= $conf['sql']['pass'];
+				DALi::$DB_NAME 	= $conf['sql']['name'];
+				DALi::$rand_key = $conf['security']['rand_key'];
 			}
 			/**
 			 * @method Connects to Database
 			 * @return New mysqli Object for database connection
 			 */
 			protected static function dbconnect() {
-				$db = new mysqli($this->DB_HOST, $this->DB_USER, $this->DB_PASS, $this->DB_NAME);
-				if ($db->connect_errno) 
+				$db = new mysqli(DALi::$DB_HOST, DALi::$DB_USER, DALi::$DB_PASS, DALi::$DB_NAME);
+				if ($db->connect_errno)
 					die("Unable to connect to the Database ( " . $db->connect_error . ')');
-				else 
+				else
 					return $db;
 			}
 			/**
-			 * @method  SELECTS specific data from SQL database based on $query 
+			 * @method  SELECTS specific data from SQL database based on $query
 			 * @todo  	Find short/better structure for method
-			 * @param 	$query SQL statement 
+			 * @param 	$query SQL statement
 			 * @return  Array of Objects based on $query
 			 */
 			protected static function query($query) {
@@ -53,11 +58,11 @@
 					printf("Unable to query from Database:", $conn->error);
 					exit();
 				}
-				while ($row = $results->fetch_array()) 
+				while ($row = $results->fetch_array())
 					$result[] = $row;
 				$results->free();
 				$conn->close();
-				return $result;
+				return isset($result) ? $result : false;
 			}
 			/**
 			 * @method UPDATE, INSERT, and DELETES specific data from SQL database based on $query
@@ -72,7 +77,7 @@
 			 * @return String Gets random key
 			 */
 			protected static function getRandomKey() {
-				return $this->rand_key;
+				return DALi::$rand_key;
 			}
 		}
 	}

@@ -1,0 +1,55 @@
+body.dark {
+  background:
+    linear-gradient(
+      rgba(14, 14, 14, 0.99),
+      rgba(35, 34, 38, 0.95)
+    ),
+    url('../../cache/custom/img/data-center.jpg');
+  background-size: cover;
+
+  /*background: #151616;*/
+}
+
+.darktext {
+  color: rgba(255,255,255,0.7);
+}
+
+.copyright {
+  text-align: center;
+}
+
+.container {
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+@media (max-width: 768px) {
+  #show_pass_button {
+    color: #111;
+  }
+
+  #show_pass_button:hover {
+    color: #fff;
+    background: #111;
+  }
+}
+@media (min-width: 768px) {
+  .container {
+    width: 350px;
+    margin-top: 5%;
+  }
+}
+@media (min-width: 992px) {
+  .container {
+    width: 350px;
+    margin-top: 5%;
+  }
+}
+@media (min-width: 1200px) {
+  .container {
+    width: 350px;
+    margin-top: 5%;
+  }
+}
