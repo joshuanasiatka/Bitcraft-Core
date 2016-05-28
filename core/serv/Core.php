@@ -8,21 +8,21 @@
 
      private $conf;
 
-     public function AttachPage() {
-       Anatomizer::BuildHead();
-       $this->conf = Anatomizer::ObtainConfig();
+     public function attachPage() {
+       Anatomizer::buildHead();
+       $this->conf = Anatomizer::obtainConfig();
        return $this->conf;
      }
    }
 
    $acl = new ACL();
-   if (!$acl->CheckLogin()) {
-      Anatomizer::SendTo("Login");
+   if (!$acl->checklogin()) {
+      Anatomizer::sendTo("Login");
       printf("ERROR: UNAUTHORIZED!");
    }
 
    $corepage = new CorePage();
-   $conf = $corepage->AttachPage();
+   $conf = $corepage->attachPage();
 ?>
 <?php
 $logo = '/core/cache/custom/img/' . $conf['customize']['main_logo'];

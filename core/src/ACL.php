@@ -17,14 +17,14 @@
 		/**
 		 * @return Boolean True if $username and $password are correct
 		 */
-		public static function Login() {
+		public static function login() {
 			$username = trim($_POST['username']);
 	    $password = trim($_POST['password']);
 	    if (!isset($_SESSION))
 				session_start();
-			if (!ACL::CheckLoginInDB($username,$password))
+			if (!ACL::checkLoginInDB($username,$password))
 				return false;
-			$_SESSION[ACL::GetLoginSessionVar()] = $username;
+			$_SESSION[ACL::getLoginSessionVar()] = $username;
 			if (isset($_POST['remember_me']))
 				setcookie('remember_me', $username, $year);
 			else {
@@ -40,7 +40,7 @@
 		 * @param
 		 * @return
 		 */
-		private static function CheckLoginInDB($username, $password) {
+		private static function checkLoginInDB($username, $password) {
 	        $nresult = parent::query("SELECT * FROM users WHERE username = '$username' LIMIT 1");
 	        $salt = $nresult[0]['salt'];
 	        $encrypted_password = $nresult[0]['password'];
@@ -48,7 +48,7 @@
 	        $query = "SELECT * FROM users WHERE username='$username' AND password='$hash'";
 	        $result = parent::query($query);
 	        if (!$result) {
-	            ACL::HandleError("Error logging in. The username and/or password is incorrect");
+	            ACL::handleError("Error logging in. The username and/or password is incorrect");
 	            return false;
 	        }
 	        $_SESSION['UserID']         = $result[0]['id'];
@@ -62,7 +62,7 @@
 		/**
 		 * @param
 		 */
-		private static function HandleError($statement) {
+		private static function handleError($statement) {
 			ACL::$error_message .= $statement."\r\n";
 		}
 		/**
@@ -75,7 +75,7 @@
 		/**
 		 * @return
 		 */
-		private static function GetLoginSessionVar() {
+		private static function getLoginSessionVar() {
 			$retvar = md5(parent::getRandomKey());
       $retvar = 'usr_'.substr($retvar,0,10);
       return $retvar;
@@ -83,7 +83,7 @@
 		/**
 		 * @param
 		 */
-		public static function GetErrorMessage() {
+		public static function getErrorMessage() {
 			if (empty(ACL::$error_message)) {
 				return '';
 			}
@@ -93,8 +93,8 @@
 		/**
 		 * @return
 		 */
-		public static function CheckLogin() {
-       $sessionvar = ACL::GetLoginSessionVar();
+		public static function checklogin() {
+       $sessionvar = ACL::getLoginSessionVar();
        if(!isset($_SESSION['UserID']))
           return false;
        return true;
@@ -102,76 +102,76 @@
     /**
      * @return
      */
-    public static function UserFullName() {
+    public static function userFullName() {
         return isset($_SESSION['name_of_user'])?$_SESSION['name_of_user']:'';
     }
     /**
      * @return
      */
-    public static function UserFirstName() {
+    public static function userFirstName() {
 
         return isset($_SESSION['first_name'])?$_SESSION['first_name']:'';
     }
     /**
      * @return
      */
-    public static function UserLastName() {
+    public static function userLastName() {
         return isset($_SESSION['last_name'])?$_SESSION['last_name']:'';
     }
     /**
      * @return
      */
-    public static function UserEmail() {
+    public static function userEmail() {
         return isset($_SESSION['email_of_user'])?$_SESSION['email_of_user']:'';
     }
     /**
      * @method
      */
-    public static function LogOut() {
+    public static function logout() {
         session_start();
 				session_destroy();
 				unlink($_SESSION);
-        $sessionvar = ACL::GetLoginSessionVar();
+        $sessionvar = ACL::getLoginSessionVar();
         $_SESSION[$sessionvar]=NULL;
         unset($_SESSION[$sessionvar]);
-				ACL::RedirectTo('/Login/');
+				ACL::redirectTo('/Login/');
     }
 		/**
 		 * @method
 		 */
-		private static function RedirectTo($url) {
+		private static function redirectTo($url) {
 			header("Location: $url");
 			exit;
 		}
     /**
      * @return
      */
-    public static function ResetPassword() {
+    public static function resetPassword() {
         if(empty($_GET['email'])) {
-            ACL::HandleError("Email is empty!");
+            ACL::handleError("Email is empty!");
             return false;
         }
         if(empty($_GET['code'])) {
-            ACL::HandleError("reset code is empty!");
+            ACL::handleError("reset code is empty!");
             return false;
         }
         $email = trim($_GET['email']);
         $code = trim($_GET['code']);
         if(ACL::GetResetPasswordCode($email) != $code) {
-            ACL::HandleError("Bad reset code!");
+            ACL::handleError("Bad reset code!");
             return false;
         }
         $user_rec = array();
-        if(!ACL::GetUserFromEmail($email,$user_rec)) {
+        if(!ACL::getUserFromEmail($email,$user_rec)) {
             return false;
         }
         $new_password = ACL::ResetUserPasswordInDB($user_rec);
         if(false === $new_password || empty($new_password)) {
-            ACL::HandleError("Error updating new password");
+            ACL::handleError("Error updating new password");
             return false;
         }
        /* if(false == ACL::SendNewPassword($user_rec,$new_password)) {
-            ACL::HandleError("Error sending new password");
+            ACL::handleError("Error sending new password");
             return false;
         }*/
         return true;
@@ -179,34 +179,67 @@
     /**
      * @return
      */
-    function ChangePassword() {
-        if(!ACL::CheckLogin()) {
-            ACL::HandleError("Not logged in!");
+    function changePassword() {
+        if(!ACL::checklogin()) {
+            ACL::handleError("Not logged in!");
             return false;
         }
         if(empty($_POST['oldpwd'])) {
-            ACL::HandleError("Old password is empty!");
+            ACL::handleError("Old password is empty!");
             return false;
         }
         if(empty($_POST['newpwd'])) {
-            ACL::HandleError("New password is empty!");
+            ACL::handleError("New password is empty!");
             return false;
         }
         $user_rec = array();
-        if(!ACL::GetUserFromEmail($this->UserEmail(),$user_rec)) {
+        if(!ACL::getUserFromEmail($this->userEmail(),$user_rec)) {
             return false;
         }
         $pwd = trim($_POST['oldpwd']);
         $salt = $user_rec['salt'];
         $hash = ACL::checkhashSSHA($salt, $pwd);
         if($user_rec['password'] != $hash) {
-            ACL::HandleError("The old password does not match!");
+            ACL::handleError("The old password does not match!");
             return false;
         }
         $newpwd = trim($_POST['newpwd']);
-        if(!ACL::ChangePasswordInDB($user_rec, $newpwd)) {
+        if(!ACL::changePasswordInDB($user_rec, $newpwd)) {
             return false;
         }
         return true;
+    }
+
+		function changePasswordInDB($user_rec, $newpwd) {
+        $newpwd = $this->sanitizeForSQL($newpwd);
+        $hash = $this->hashSSHA($newpwd);
+        $new_password = $hash["encrypted"];
+        $salt = $hash["salt"];
+        $qry = "Update $this->tablename Set password='".$new_password."', salt='".$salt."' Where  id=".$_SESSION['userID']."";
+        if (!mysql_query( $qry ,$this->connection)) {
+            $this->handleDBError("Error updating the password \nquery:$qry");
+            return false;
+        }
+        return true;
+    }
+
+		function hashSSHA($password) {
+        $salt = sha1(rand());
+        $salt = substr($salt, 0, 10);
+        $encrypted = base64_encode(sha1($password . $salt, true) . $salt);
+        $hash = array("salt" => $salt, "encrypted" => $encrypted);
+        return $hash;
+    }
+
+		function handleDBError($err) {
+        $this->handleError($err."\r\n mysqlerror:".mysql_error());
+    }
+
+		function getResetPasswordCode($email) {
+       return substr(md5($email.$this->sitename.$this->rand_key),0,10);
+    }
+
+		function sanitizeForSQL($str) {
+			return addslashes( $str );
     }
 }
