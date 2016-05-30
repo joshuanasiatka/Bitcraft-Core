@@ -62,12 +62,12 @@
       <form id='login' role="form" class="col-md-12" action='' name="login_form" method='post' accept-charset='UTF-8'>
         <input type='hidden' name='submitted' id='submitted' value='1'/>
         <div class="form-group has-feedback">
-            <input type='text' name='username' class="form-control input-lg" id='username' value="<?= isset($_COOKIE['remember_me']) ? $_COOKIE['remember_me'] : ''; ?>" placeholder="Username" />
+            <input type='text' name='username' class="form-control input-md" id='username' value="<?= isset($_COOKIE['remember_me']) ? $_COOKIE['remember_me'] : ''; ?>" placeholder="Username" />
             <span class="glyphicon glyphicon-user form-control-feedback"></span>
             <span id='login_username_errorloc' class='error'></span>
         </div>
         <div class="form-group has-feedback">
-            <input type="password" id="password" name="password" class="form-control input-lg" placeholder="Password" />
+            <input type="password" id="password" name="password" class="form-control input-md" placeholder="Password" />
             <span id="show_pass_button" class="glyphicon glyphicon-eye-open form-control-feedback"></span>
             <span id='login_password_errorloc' class='error'></span>
         </div>
@@ -77,7 +77,7 @@
           </label>
         </div>
         <div class="form-group addtop">
-          <button name="submit" type="submit" onclick="loginFormValidation();" class="btn btn-primary btn-block btn-flat btn-lg">Sign In</button>
+          <button name="submit" type="submit" onclick="loginFormValidation();" class="btn btn-primary btn-block btn-flat btn-md">Sign In</button>
         </div><!-- /.col -->
         <div class="form-group">
             <!--<span><a href="javascript:;" data-toggle="modal" data-target="#help">Need help?</a></span>-->

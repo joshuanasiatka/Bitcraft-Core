@@ -13,11 +13,11 @@
             <p>If you forgot your password, enter the email address associated with your account to reset it. A password reset link will be sent to that account.</p>
             <input type='hidden' name='submitted_pass' id='submitted_pass' value='1'/>
             <div class="form-group">
-                <input type='text' name='email' class="form-control input-lg" id='email' value='' placeholder="Email Address" />
+                <input type='text' name='email' class="form-control input-md" id='email' value='' placeholder="Email Address" />
                 <span id='resetreq_email_errorloc' class='error'></span>
             </div>
             <div class="form-group">
-                <button name='Submit' type='submit' class="btn btn-primary btn-lg btn-block">Reset Password</button>
+                <button name='Submit' type='submit' class="btn btn-primary btn-md btn-block">Reset Password</button>
             </div>
         </form>
         </div>
