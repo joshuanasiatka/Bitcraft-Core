@@ -57,6 +57,7 @@
 	        $_SESSION['name_of_user']   = $result[0]['fname'] ." ". $result[0]['lname'];
 	        $_SESSION['username']       = $result[0]['username'];
 	        $_SESSION['email_of_user']  = $result[0]['email'];
+					ACL::obtainPermissions($result[0]['id']);
 	        return true;
 		}
 		/**
@@ -179,7 +180,7 @@
     /**
      * @return
      */
-    function changePassword() {
+    private static function changePassword() {
         if(!ACL::checklogin()) {
             ACL::handleError("Not logged in!");
             return false;
@@ -210,7 +211,7 @@
         return true;
     }
 
-		function changePasswordInDB($user_rec, $newpwd) {
+		private static function changePasswordInDB($user_rec, $newpwd) {
         $newpwd = $this->sanitizeForSQL($newpwd);
         $hash = $this->hashSSHA($newpwd);
         $new_password = $hash["encrypted"];
@@ -223,7 +224,7 @@
         return true;
     }
 
-		function hashSSHA($password) {
+		private static function hashSSHA($password) {
         $salt = sha1(rand());
         $salt = substr($salt, 0, 10);
         $encrypted = base64_encode(sha1($password . $salt, true) . $salt);
@@ -231,15 +232,52 @@
         return $hash;
     }
 
-		function handleDBError($err) {
+		private static function handleDBError($err) {
         $this->handleError($err."\r\n mysqlerror:".mysql_error());
     }
 
-		function getResetPasswordCode($email) {
+		private static function getResetPasswordCode($email) {
        return substr(md5($email.$this->sitename.$this->rand_key),0,10);
     }
 
-		function sanitizeForSQL($str) {
+		private static function sanitizeForSQL($str) {
 			return addslashes( $str );
     }
+
+		public static function obtainPermissions($UserID) {
+			$roles = ACL::obtainRoles($UserID);
+			$permName = array();
+			$permID = array();
+			$permRef = array();
+			foreach ($roles as $role) {
+				$sql = "SELECT permissions.ID as permID, permKey, permName
+				 				FROM permissions
+								INNER JOIN role_perms
+								ON role_perms.permID = permissions.ID
+								AND role_perms.roleID = $role[0]";
+			  $result = parent::query($sql);
+				if (!in_array($result[0], $perms))
+					array_push($permID, $result[0][0]);
+					array_push($permRef, $result[0][1]);
+					array_push($permName, $result[0][2]);
+			}
+			$_SESSION['permID'] = $permID;
+			$_SESSION['permRef'] = $permRef;
+			$_SESSION['permName'] = $permName;
+		}
+
+		public static function obtainRoles($UserID) {
+			$sql = "SELECT 			ID as roleID, roleName
+							FROM 				roles
+							INNER JOIN 	user_roles
+							WHERE 			user_roles.roleID = roles.ID
+							AND 				user_roles.userID = '$UserID'
+							ORDER BY 		user_roles.roleID ASC";
+			$result = parent::query($sql);
+			// $roles = array();
+			// foreach ($result as $role) {
+			// 	array_push($roles, $role[1]);
+			// }
+			return $result;
+		}
 }

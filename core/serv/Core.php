@@ -10,7 +10,16 @@
 
      public function attachPage() {
        Anatomizer::buildHead();
+
+       // Get the config file
        $this->conf = Anatomizer::obtainConfig();
+
+       // Get the page contents
+       $permRef = $_SESSION['permRef'];
+       in_array('super_admin', $permRef) ? require_once 'parts/Core/adminMsg.php' : require_once 'parts/Auth/unauthorized.php';
+
+       // Close the page
+       Anatomizer::endPage();
        return $this->conf;
      }
    }
@@ -23,12 +32,3 @@
 
    $corepage = new CorePage();
    $conf = $corepage->attachPage();
-?>
-
-  <body class='hold-transition'>
-    <div class="container">
-      <h1><small>You've successfully logged into:</small><br>Bitcraft Core</h1>
-      <h3><em><a href="/Logout/">Logout</a></em></h3>
-    </div>
-  </body>
-</html>

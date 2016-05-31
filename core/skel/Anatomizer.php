@@ -100,4 +100,8 @@
      public static function publishCopyright() {
        return require_once 'core/serv/parts/Copyright.php';
      }
+
+     public static function endPage() {
+       echo "\r\n</html>";
+     }
    }
