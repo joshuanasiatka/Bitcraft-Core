@@ -6,8 +6,8 @@
  	 class Anatomizer extends ACL {
 
      /**
-      * @var REQUEST_URI initialized by constructor
-      * @var UserID initialized by constructor
+      * @var $REQUEST_URI initialized by constructor
+      * @var $UserID initialized by constructor
       */
      private $REQUEST_URI;
      private $UserID;
@@ -17,45 +17,44 @@
        $this->UserID       = isset($_SESSION['UserID']) ? $_SESSION['UserID'] : '';
      }
 
-     public function GatherNeeds() {
+     public function gatherNeeds() {
        session_start();
-       Anatomizer::PublishCopyright();
+       Anatomizer::publishCopyright();
       //  if ((!isset($_COOKIE['session'])) && ($this->REQUEST_URI !== "/Login/")) {
       //    Anatomizer::SendTo('Login');
       //  } else
-       if ($this->REQUEST_URI == "/Login/") {
-         Anatomizer::AddLimb("Auth");
-       } else if ($this->REQUEST_URI == "/Logout/") {
-         ACL::Logout();
-       } else if ($this->REQUEST_URI == "/Core/") {
-         Anatomizer::AddLimb("Core");
-       } else {
-         Anatomizer::SendTo('Core');
-       }
+       if ($this->REQUEST_URI == "/Login/") 
+         Anatomizer::addLimb("Auth");
+       else if ($this->REQUEST_URI == "/Logout/")
+         ACL::logout();
+       else if ($this->REQUEST_URI == "/Core/")
+         Anatomizer::addLimb("Core");
+       else 
+         Anatomizer::sendTo('Core');
      }
 
-     private static function SendTo($page) {
+     private static function sendTo($page) {
        header("Location: /$page/");
        exit;
      }
 
-     private static function AddLimb($limb) {
+     private static function addLimb($limb) {
        require "core/bits/$limb.php";
      }
 
-     public static function BuildHead() {
-       Anatomizer::PublishCopyright();
+     public static function buildHead() {
+       Anatomizer::publishCopyright();
        return require_once "core/bits/pieces/head.php";
      }
 
-     public static function ObtainConfig() {
+     public static function obtainConfig() {
        ob_start();
        $config = include 'core/cache/custom/config.php';
        $out = ob_get_clean();
        return $config;
      }
 
-     public static function PublishCopyright() {
+     public static function publishCopyright() {
        return require_once 'core/bits/pieces/Copyright.php';
      }
    }

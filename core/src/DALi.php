@@ -8,12 +8,13 @@
 		 */
 		class DALi {
 			/**
-			 * @var $DB_HOST Initialized in Constructor
-			 * @var $DB_USER Initialized in Constructor
-			 * @var $DB_PASS Initialized in Constructor
-			 * @var $DB_NAME Initialized in Constructor
+			 * @var $DB_HOST  Initialized in Constructor
+			 * @var $DB_USER  Initialized in Constructor
+			 * @var $DB_PASS  Initialized in Constructor
+			 * @var $DB_NAME  Initialized in Constructor
+			 * @var $rand_key Initialized in Constructor
 			 */
-		  private static $conf;
+		  	private static $conf;
 			private static $DB_HOST;
 			private static $DB_USER;
 			private static $DB_PASS;

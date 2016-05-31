@@ -8,9 +8,9 @@
 
      private $conf;
 
-     public function AttachPage() {
+     public function attachPage() {
        Anatomizer::BuildHead();
-       $this->conf = Anatomizer::ObtainConfig();
+       $this->conf = Anatomizer::obtainConfig();
        return $this->conf;
      }
    }
@@ -23,15 +23,15 @@
      $error = '<div class="alert alert-danger alert-dismissable" id="error">';
      if (ACL::Login()) {
        printf("Successfully logged in!");
-       Anatomizer::SendTo("Core");
+       Anatomizer::sendTo("Core");
      } else {
        $error .= "<button type='button' class='close' data-dismiss='alert'>x</button>";
-       $error .= ACL::GetErrorMessage() . '</div>';
+       $error .= ACL::getErrorMessage() . '</div>';
      }
    }
 
    $authpage = new AuthPage();
-   $conf = $authpage->AttachPage();
+   $conf = $authpage->attachPage();
 ?>
 <?php
 $logo = '/core/cache/custom/img/' . $conf['customize']['main_logo'];
