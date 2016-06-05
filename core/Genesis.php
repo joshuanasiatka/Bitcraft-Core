@@ -7,4 +7,4 @@
 
 	 $anatomizer = new Anatomizer();
 
-	 $anatomizer->gatherNeeds();
+	 Anatomizer::gatherNeeds();

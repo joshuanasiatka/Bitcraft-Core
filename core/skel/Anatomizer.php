@@ -9,32 +9,32 @@
       * @var $REQUEST_URI initialized by constructor
       * @var $UserID initialized by constructor
       */
-     private $REQUEST_URI;
-     private $UserID;
+     private static $REQUEST_URI;
+     private static $UserID;
 
      public function __construct() {
-       $this->REQUEST_URI  = $_SERVER['REQUEST_URI'];
-       $this->UserID       = isset($_SESSION['UserID']) ? $_SESSION['UserID'] : '';
+       Anatomizer::$REQUEST_URI  = $_SERVER['REQUEST_URI'];
+       Anatomizer::$UserID       = isset($_SESSION['UserID']) ? $_SESSION['UserID'] : '';
      }
 
-     public function gatherNeeds() {
+     public static function gatherNeeds() {
        session_start();
        Anatomizer::publishCopyright();
-      //  if ((!isset($_COOKIE['session'])) && ($this->REQUEST_URI !== "/Login/")) {
-      //    Anatomizer::sendTo('Login');
-      //  } else
-       if ($this->REQUEST_URI == "/Login/") 
+       if (Anatomizer::$REQUEST_URI == "/Login/")
          Anatomizer::addLimb("Auth");
-       else if ($this->REQUEST_URI == "/Logout/")
+       else if (Anatomizer::$REQUEST_URI == "/Logout/")
          ACL::logout();
-       else if ($this->REQUEST_URI == "/Core/")
+       else
          Anatomizer::addLimb("Core");
-       else 
-         Anatomizer::sendTo('Core');
      }
 
-     private static function sendTo($page) {
+     public static function sendTo($page) {
        header("Location: /$page/");
+       exit;
+     }
+
+     public static function redirectTo($page) {
+       header("Location: $page");
        exit;
      }
 
@@ -96,7 +96,7 @@
      }
 
      public static function publishCopyright() {
-       return require_once 'core/serv/parts/Copyright.php';
+       return require_once 'core/serv/parts/copyright.php';
      }
 
      public static function endPage() {
