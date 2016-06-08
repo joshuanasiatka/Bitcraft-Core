@@ -1,31 +1,37 @@
 <?php
   /**
-   * Doc
+   * @uses ACL Class from src
    */
-   require_once 'core/src/ACL.php';
+   require_once "core/src/ACL.php";
+   require_once 'core/src/Cortex.php';
  	 class Anatomizer extends ACL {
 
      /**
       * @var $REQUEST_URI initialized by constructor
       * @var $UserID initialized by constructor
+      * @var
       */
      private static $REQUEST_URI;
      private static $UserID;
+     public static $conf;
 
-     public function __construct() {
-       Anatomizer::$REQUEST_URI  = $_SERVER['REQUEST_URI'];
-       Anatomizer::$UserID       = isset($_SESSION['UserID']) ? $_SESSION['UserID'] : '';
+     public static function init() { 
+       parent::init();
+       self::$conf = parent::$conf;
+       self::$REQUEST_URI  = $_SERVER['REQUEST_URI'];
+       self::$UserID       = isset($_SESSION['UserID']) ? $_SESSION['UserID'] : '';
+       self::gatherNeeds();
      }
 
      public static function gatherNeeds() {
        session_start();
-       Anatomizer::publishCopyright();
-       if (Anatomizer::$REQUEST_URI == "/Login/")
-         Anatomizer::addLimb("Auth");
-       else if (Anatomizer::$REQUEST_URI == "/Logout/")
-         ACL::logout();
+       self::publishCopyright();
+       if (self::$REQUEST_URI == "/Login/")
+         self::addLimb("Auth");
+       else if (self::$REQUEST_URI == "/Logout/")
+         parent::logout();
        else
-         Anatomizer::addLimb("Core");
+         self::addLimb("Core");
      }
 
      public static function sendTo($page) {
@@ -38,12 +44,12 @@
        exit;
      }
 
-     private static function addLimb($limb) {
-       require "core/serv/$limb.php";
+     private static function addLimb($limb, $sub = '', $sub_sub = '') {
+       require "core/serv/$sub$sub_sub$limb.php";
      }
 
      public static function buildHead() {
-       Anatomizer::publishCopyright();
+       self::publishCopyright();
        return require_once "core/serv/parts/head.php";
      }
 
@@ -88,12 +94,6 @@
        }
        echo $dependencies;
      }
-     public static function obtainConfig() {
-       ob_start();
-       $config = include 'core/cache/custom/config.php';
-       $out = ob_get_clean();
-       return $config;
-     }
 
      public static function publishCopyright() {
        return require_once 'core/serv/parts/copyright.php';
@@ -101,5 +101,14 @@
 
      public static function endPage() {
        echo "\r\n</html>";
+     }
+     private static function getAllSidebarInfo() {
+        if(!Cortex::hasDownloadedPackages()) {
+          self::addLimb('BCC_sidebar', 'parts/', 'FrontEnd/');
+        }
+     }
+     public static function buildBase() {
+        self::addLimb('sidebar', 'parts/');
+        self::getAllSidebarInfo();
      }
    }

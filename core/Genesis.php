@@ -5,6 +5,4 @@
 	 ini_set('display_errors', 1);
 	 require 'core/skel/Anatomizer.php';
 
-	 $anatomizer = new Anatomizer();
-
-	 Anatomizer::gatherNeeds();
+	 Anatomizer::init();

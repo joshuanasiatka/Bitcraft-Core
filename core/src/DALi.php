@@ -14,33 +14,28 @@
 			 * @var $DB_NAME  Initialized in Constructor
 			 * @var $rand_key Initialized in Constructor
 			 */
-		  	private static $conf;
+			public static  $conf;
 			private static $DB_HOST;
 			private static $DB_USER;
 			private static $DB_PASS;
 			private static $DB_NAME;
 			private static $rand_key;
-			/**
-			 * @method Initializing connection variables
-			 */
-			public function __construct() {
-				DALi::init();
-			}
 
  			public static function init() {
-				require_once 'core/cache/custom/config.php';
-				DALi::$DB_HOST 	= $conf['sql']['host'];
-				DALi::$DB_USER 	= $conf['sql']['user'];
-				DALi::$DB_PASS 	= $conf['sql']['pass'];
-				DALi::$DB_NAME 	= $conf['sql']['name'];
-				DALi::$rand_key = $conf['security']['rand_key'];
+				require 'core/cache/custom/config.php';
+				self::$conf = $conf;
+				self::$DB_HOST 	= $conf['sql']['host'];
+				self::$DB_USER 	= $conf['sql']['user'];
+				self::$DB_PASS 	= $conf['sql']['pass'];
+				self::$DB_NAME 	= $conf['sql']['name'];
+				self::$rand_key = $conf['security']['rand_key'];
 			}
 			/**
 			 * @method Connects to Database
 			 * @return New mysqli Object for database connection
 			 */
 			protected static function dbconnect() {
-				$db = new mysqli(DALi::$DB_HOST, DALi::$DB_USER, DALi::$DB_PASS, DALi::$DB_NAME);
+				$db = new mysqli(self::$DB_HOST, self::$DB_USER, self::$DB_PASS, self::$DB_NAME);
 				if ($db->connect_errno)
 					die("Unable to connect to the Database ( " . $db->connect_error . ')');
 				else

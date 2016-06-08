@@ -4,34 +4,34 @@
    */
    require_once 'core/skel/Anatomizer.php';
    require_once 'core/src/ACL.php';
-   class CorePage extends Anatomizer {
+   class CorePage {
 
-     private $conf;
+     public static $conf;
      private static $REQUEST_URI;
      private static $UserID;
 
-     public function __construct() {
-       CorePage::$REQUEST_URI  = $_SERVER['REQUEST_URI'];
-       CorePage::$UserID       = isset($_SESSION['UserID']) ? $_SESSION['UserID'] : '';
+     public static function init() {
+       self::$conf = Anatomizer::$conf;
+       self::$REQUEST_URI  = $_SERVER['REQUEST_URI'];
+       self::$UserID       = isset($_SESSION['UserID']) ? $_SESSION['UserID'] : '';
+       self::attachPage();
      }
 
-     public function attachPage() {
+     public static function attachPage() {
        Anatomizer::buildHead();
-
-       // Get the config file
-       $this->conf = Anatomizer::obtainConfig();
-
        // Get the page contents
-       CorePage::pageLinkCortex();
+       self::pageLinkCortex();
+       // Builds GUI
+       Anatomizer::buildBase();
        // Close the page
        Anatomizer::endPage();
-       return $this->conf;
+       //return self::$conf;
      }
 
      private static function pageLinkCortex() {
-       if (strpos(CorePage::$REQUEST_URI, "Core") !== false) {
-         if (!parent::checklogin()) {
-            parent::sendTo("Login");
+       if (strpos(self::$REQUEST_URI, "Core") !== false) {
+         if (!ACL::checklogin()) {
+            Anatomizer::sendTo("Login");
             printf("ERROR: UNAUTHORIZED!");
          }
          $permRef = $_SESSION['permRef'];
@@ -41,6 +41,4 @@
        }
      }
    }
-
-   $corepage = new CorePage();
-   $conf = $corepage->attachPage();
+   CorePage::init();

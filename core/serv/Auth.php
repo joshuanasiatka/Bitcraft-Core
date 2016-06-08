@@ -8,22 +8,23 @@
    require_once 'core/src/ACL.php';
    class AuthPage extends Anatomizer {
 
-     private $conf;
+     public static $conf;
 
-     public function attachPage() {
+     public static function init() {
+        self::$conf = Anatomizer::$conf;
+        self::attachPage();
+     }
+     public static function attachPage() {
        /**
         * @todo make function to fetch page-specific css
         */
-       Anatomizer::buildHead();
-       $this->conf = Anatomizer::obtainConfig();
-       return $this->conf;
+       parent::buildHead();
      }
    }
 
    /**
     * @todo Get DALi constructor working so ACL::init() isn't necessary
     */
-   ACL::init();
    if (isset($_POST['submitted'])) {
      $error = '<div class="alert alert-danger alert-dismissable" id="error">';
      if (ACL::login()) {
@@ -34,9 +35,8 @@
        $error .= ACL::getErrorMessage() . '</div>';
      }
    }
-
-   $authpage = new AuthPage();
-   $conf = $authpage->attachPage();
+   AuthPage::init();
+   $conf = AuthPage::$conf;
 
    $js = array('jQuery',
                'Bootstrap',
