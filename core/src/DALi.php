@@ -8,6 +8,7 @@
 		 */
 		class DALi {
 			/**
+			 * @var $conf 	  Initialized in Constructor
 			 * @var $DB_HOST  Initialized in Constructor
 			 * @var $DB_USER  Initialized in Constructor
 			 * @var $DB_PASS  Initialized in Constructor

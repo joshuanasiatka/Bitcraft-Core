@@ -2,14 +2,14 @@
   /**
    * @uses ACL Class from src
    */
-   require_once "core/src/ACL.php";
-   require_once 'core/src/Cortex.php';
- 	 class Anatomizer extends ACL {
+  require_once "core/src/ACL.php";
+  require_once 'core/src/Cortex.php';
+ 	class Anatomizer extends ACL {
 
      /**
       * @var $REQUEST_URI initialized by constructor
-      * @var $UserID initialized by constructor
-      * @var
+      * @var $UserID      initialized by constructor
+      * @var $conf        Not sure if needed because of parent
       */
      private static $REQUEST_URI;
      private static $UserID;
@@ -43,7 +43,11 @@
        header("Location: $page");
        exit;
      }
-
+     /**
+      * @param $limb    The end page you require
+      * @param $sub     A dividing sub folder if needed to serv. Empty string by default
+      * @param $sub_sub A dividing sub folder if needed to $sub. Empty string by default
+      */
      private static function addLimb($limb, $sub = '', $sub_sub = '') {
        require "core/serv/$sub$sub_sub$limb.php";
      }
@@ -103,12 +107,11 @@
        echo "\r\n</html>";
      }
      private static function getAllSidebarInfo() {
-        if(!Cortex::hasDownloadedPackages()) {
+        if(!Cortex::hasDownloadedPackages()) 
           self::addLimb('BCC_sidebar', 'parts/', 'FrontEnd/');
-        }
      }
      public static function buildBase() {
         self::addLimb('sidebar', 'parts/');
         self::getAllSidebarInfo();
      }
-   }
+  }

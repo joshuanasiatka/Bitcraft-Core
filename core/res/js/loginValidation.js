@@ -1,4 +1,4 @@
-var loginFormValidation = (function() {
+(function() {
 	$('#login').submit(function (event) {
 		var $username = $('#username').val();
 		var $password = $('#password').val();
@@ -11,8 +11,7 @@ var loginFormValidation = (function() {
 			var isPossibleOfInjection = false;
 			var checkInject = /\W/g;
 			var injection = checkInject.exec(value);
-			isPossibleOfInjection = !injection ? true : false;
-			return isPossibleOfInjection;
+			return !injection;
 		}
 	
 		// Handle username validation
