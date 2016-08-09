@@ -25,9 +25,9 @@ Any questions regarding this project, contact [support@bitcraftlabs.net](mailto:
         img/
         js/
      serv/              pages
-        parts/          reusable page parts
-     skel/              page building
-     src/               mvc classes
+        content/          reusable page parts - Views
+     skel/              page building - Controllers
+     src/               mvc classes - Models
      Genesis.php        inits page creation
   index.php             loads mvc framework; requires Genesis.php
   install.sh            install script that currently targets bower

@@ -6,7 +6,7 @@
 	class ACL extends DALi {
 
 		public static $conf;
-		
+
 		public static function init() {
 			parent::init();
 			self::$conf = parent::$conf;
@@ -84,7 +84,7 @@
 		 * @param
 		 */
 		public static function getErrorMessage() {
-			if (empty(self::$error_message)) 
+			if (empty(self::$error_message))
 				return '';
 			return nl2br(htmlentities(self::$error_message));
 		}
@@ -206,7 +206,7 @@
             }
             return true;
         }
-		
+
 		private static function changePasswordInDB($user_rec, $newpwd) {
             $newpwd = $this->sanitizeForSQL($newpwd);
             $hash = $this->hashSSHA($newpwd);
