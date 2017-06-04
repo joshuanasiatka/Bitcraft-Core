@@ -1,10 +1,16 @@
 #!/usr/bin/env bash
 
+printf "Updating all..."
 apt-get update
+printf "Installing Apache2"
 apt-get install -y apache2
+
 if ! [ -L /var/www ]; then
     rm -rf /var/www
     ln -fs /vagrant /var/www
 fi
 
+printf "Installing MySQL..."
 apt-get install mysql-server
+printf "Installing Composer..."
+apt-get install composer
