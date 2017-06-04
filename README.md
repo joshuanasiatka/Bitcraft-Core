@@ -5,31 +5,3 @@
 Any questions regarding this project, contact [support@bitcraftlabs.net](mailto:support@bitcraftlabs.net) with the keyword *Bitcraft Core* in the subject line.
 
 *Any issues with the code can be directed [here](https://github.com/joshuanasiatka/Bitcraft-Core/issues).*
-
-### Directory Structure
-```
-/                       root
-  core/                 mvc
-     bits/              add-on/packages
-     cache/             client storage
-        <custom>/       --- holds configs
-           img/         ------ holds images
-        pref/           --- preferences; not sure if necessary
-     config/            application configuration
-     lib/               dependencies
-	    <bower>/
-        .bowerrc
-        bower.json
-     res/               resources
-        css/
-        img/
-        js/
-     serv/              pages
-        content/          reusable page parts - Views
-     skel/              page building - Controllers
-     src/               mvc classes - Models
-     Genesis.php        inits page creation
-  index.php             loads mvc framework; requires Genesis.php
-  install.sh            install script that currently targets bower
-
-```

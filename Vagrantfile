@@ -14,7 +14,7 @@ Vagrant.configure("2") do |config|
   # boxes at https://atlas.hashicorp.com/search.
   config.vm.box = "ubuntu/xenial64"
   config.vm.box_url = "http://files.vagrantup.com/xenial64.box"
-  config.vm.provision :shell, path: "bin/bootstrap.sh"
+  config.vm.provision :shell, path: "bin/bootstrap"
   config.vm.network :forwarded_port, guest: 80, host: 8080
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
