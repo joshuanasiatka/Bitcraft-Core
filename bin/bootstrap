@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 
-printf "Updating all..."
+echo "Updating all current packages..."
 apt-get update
-printf "Installing Apache2"
+echo "Upgrading all current packages..."
+apt-get upgrade
+echo "Installing Apache2..."
 apt-get install -y apache2
 
 if ! [ -L /var/www ]; then
@@ -10,7 +12,17 @@ if ! [ -L /var/www ]; then
     ln -fs /vagrant /var/www
 fi
 
-printf "Installing MySQL..."
-apt-get install mysql-server
-printf "Installing Composer..."
+echo "Installing MySQL..."
+apt-get install -y mysql-server mysql-client
+
+echo "Installing PHP..."
+apt-get install php7.0 libapache2-mod-php7.0   # for PHP 7.0
+
+echo "Installing Composer..."
 apt-get install composer
+
+echo "Installing PHP Extensions..."
+apt-get install php7.0-mysql php7.0-curl php7.0-gd php7.0-intl php-pear php-imagick php7.0-imap php7.0-mcrypt php-memcache php7.0-pspell php7.0-recode php7.0-sqlite3 php7.0-tidy php7.0-xmlrpc php7.0-xsl php7.0-mbstring php-gettext
+
+echo "Installing PHPmyadmin..."
+apt-get install phpmyadmin
