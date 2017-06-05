@@ -1,25 +1,95 @@
-#!/usr/bin/env bash
+#! /usr/bin/env bash
 
-echo "Updating all current packages..."
-sudo apt-get update
-echo "Upgrading all current packages..."
-sudo apt-get upgrade
-echo "Installing Apache2..."
-sudo apt-get install -y apache2
+# Temp Variables
+DBNAME=foo_db
+DBUSER=foo_dbuser
+DBPASSWD=test123
 
-if ! [ -L /var/www ]; then
-    rm -rf /var/www
-    ln -fs /vagrant/public /var/www
-fi
+echo -e "\n--- Mkay, installing now... ---\n"
 
-echo "Installing PostgreSQL..."
-sudo apt-get install -y postgresql postgresql-contrib postgresql-client-common
+echo -e "\n--- Updating packages list ---\n"
+sudo apt-get -qq update
 
-# echo "Installing PHP 7..."
-# sudo apt-get install php7.0 libapache2-mod-php7.0
-#
-# echo "Installing Composer..."
-# sudo apt-get install composer
-#
-# echo "Installing PHP Extensions..."
-# sudo apt-get install php7.0-pgsql php7.0-curl php7.0-imap php7.0-mcrypt php-memcache php7.0-xmlrpc php7.0-mbstring
+echo -e "\n--- Install base packages ---\n"
+sudo apt-get -y install vim curl build-essential python-software-properties git > /dev/null 2>&1
+
+echo -e "\n--- Add some repos to update our distro ---\n"
+sudo add-apt-repository ppa:ondrej/php5 > /dev/null 2>&1
+sudo echo "deb http://apt.postgresql.org/pub/repos/apt/ precise-pgdg main" >> /etc/apt/sources.list.d/pgdg.list
+wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add - > /dev/null 2>&1
+sudo add-apt-repository ppa:chris-lea/node.js > /dev/null 2>&1
+
+echo -e "\n--- Updating packages list ---\n"
+sudo apt-get -qq update
+
+echo -e "\n--- Install PostgreSQL specific packages ---\n"
+sudo apt-get -y install postgresql-9.3 phppgadmin > /dev/null 2>&1
+
+echo -e "\n--- Setting up our PostgreSQL user and db ---\n"
+sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD '$DBPASSWD'"
+sudo -u postgres psql -c "CREATE USER $DBUSER WITH PASSWORD '$DBPASSWD'"
+sudo -u postgres psql -c "CREATE DATABASE $DBNAME ENCODING = 'UTF-8' LC_CTYPE = 'en_US.UTF-8' LC_COLLATE = 'en_US.UTF-8' OWNER $DBUSER TEMPLATE template0"
+
+echo -e "\n--- Installing PHP-specific packages ---\n"
+sudo apt-get -y install php5 apache2 libapache2-mod-php5 php5-curl php5-gd php5-mcrypt php5-pgsql > /dev/null 2>&1
+
+echo -e "\n--- Installing and configuring Xdebug ---\n"
+sudo apt-get -y install php5-xdebug > /dev/null 2>&1
+sudo cat > /etc/php5/mods-available/xdebug.ini << "EOF"
+xdebug.scream=1
+xdebug.cli_color=1
+xdebug.show_local_vars=1
+EOF
+
+echo -e "\n--- Enabling mod-rewrite ---\n"
+sudo a2enmod rewrite > /dev/null 2>&1
+
+echo -e "\n--- Allowing Apache override to all ---\n"
+sudo sed -i "s/AllowOverride None/AllowOverride All/g" /etc/apache2/apache2.conf
+
+echo -e "\n--- Setting document root to public directory ---\n"
+sudo rm -rf /var/www
+sudo ln -fs /vagrant/public /var/www
+
+echo -e "\n--- We definitly need to see the PHP errors, turning them on ---\n"
+sudo sed -i "s/error_reporting = .*/error_reporting = E_ALL/" /etc/php5/apache2/php.ini
+sudo sed -i "s/display_errors = .*/display_errors = On/" /etc/php5/apache2/php.ini
+
+echo -e "\n--- Configure Apache to use phppgadmin ---\n"
+sudo echo -e "\n\nListen 81\n" >> /etc/apache2/ports.conf
+sudo sed -i "s/\$conf\['extra_login_security'\] = true;/\$conf\['extra_login_security'\] = false;/" /usr/share/phppgadmin/conf/config.inc.php;
+sudo cat > /etc/apache2/conf-available/phppgadmin.conf << "EOF"
+<VirtualHost *:81>
+    ServerAdmin webmaster@localhost
+    DocumentRoot /usr/share/phppgadmin
+    DirectoryIndex index.php
+    ErrorLog ${APACHE_LOG_DIR}/phppgadmin-error.log
+    CustomLog ${APACHE_LOG_DIR}/phppgadmin-access.log combined
+</VirtualHost>
+EOF
+sudo a2enconf phppgadmin > /dev/null 2>&1
+
+echo -e "\n--- Restarting Apache ---\n"
+sudo service apache2 restart > /dev/null 2>&1
+
+echo -e "\n--- Installing Composer for PHP package management ---\n"
+curl --silent https://getcomposer.org/installer | php > /dev/null 2>&1
+sudo mv composer.phar /usr/local/bin/composer
+
+echo -e "\n--- Installing NodeJS and NPM ---\n"
+sudo apt-get -y install nodejs > /dev/null 2>&1
+sudo curl --silent https://npmjs.org/install.sh | sh > /dev/null 2>&1
+
+echo -e "\n--- Installing javascript components ---\n"
+sudo npm install -g grunt-cli bower > /dev/null 2>&1
+
+echo -e "\n--- Updating project components and pulling latest versions ---\n"
+cd /vagrant
+sudo -u vagrant -H sh -c "composer install" > /dev/null 2>&1
+cd /vagrant/client
+sudo -u vagrant -H sh -c "npm install" > /dev/null 2>&1
+sudo -u vagrant -H sh -c "bower install angular-route restangular semantic" > /dev/null 2>&1
+sudo -u vagrant -H sh -c "grunt" > /dev/null 2>&1
+
+echo -e "\n--- Creating a symlink for future phpunit use ---\n"
+sudo ln -fs /vagrant/vendor/bin/phpunit /usr/local/bin/phpunit
