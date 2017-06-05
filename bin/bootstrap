@@ -1,28 +1,25 @@
 #!/usr/bin/env bash
 
 echo "Updating all current packages..."
-apt-get update
+sudo apt-get update
 echo "Upgrading all current packages..."
-apt-get upgrade
+sudo apt-get upgrade
 echo "Installing Apache2..."
-apt-get install -y apache2
+sudo apt-get install -y apache2
 
 if ! [ -L /var/www ]; then
     rm -rf /var/www
-    ln -fs /vagrant /var/www
+    ln -fs /vagrant/public /var/www
 fi
 
-echo "Installing MySQL..."
-apt-get install -y mysql-server mysql-client
+echo "Installing PostgreSQL..."
+sudo apt-get install -y postgresql postgresql-contrib postgresql-client-common
 
-echo "Installing PHP..."
-apt-get install php7.0 libapache2-mod-php7.0   # for PHP 7.0
-
-echo "Installing Composer..."
-apt-get install composer
-
-echo "Installing PHP Extensions..."
-apt-get install php7.0-mysql php7.0-curl php7.0-gd php7.0-intl php-pear php-imagick php7.0-imap php7.0-mcrypt php-memcache php7.0-pspell php7.0-recode php7.0-sqlite3 php7.0-tidy php7.0-xmlrpc php7.0-xsl php7.0-mbstring php-gettext
-
-echo "Installing PHPmyadmin..."
-apt-get install phpmyadmin
+# echo "Installing PHP 7..."
+# sudo apt-get install php7.0 libapache2-mod-php7.0
+#
+# echo "Installing Composer..."
+# sudo apt-get install composer
+#
+# echo "Installing PHP Extensions..."
+# sudo apt-get install php7.0-pgsql php7.0-curl php7.0-imap php7.0-mcrypt php-memcache php7.0-xmlrpc php7.0-mbstring
