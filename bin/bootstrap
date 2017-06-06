@@ -1,95 +1,99 @@
-#! /usr/bin/env bash
+#!/usr/bin/env bash
 
-# Temp Variables
-DBNAME=foo_db
-DBUSER=foo_dbuser
-DBPASSWD=test123
+###################################
+# Vagrant Provisioning Script
+###################################
 
-echo -e "\n--- Mkay, installing now... ---\n"
+# DEFINE VARIABLES
+### DATABASE
+DBNAME=bcc_db
+DBUSER=bcc_dbuser
+DBPASSWD=password123
 
-echo -e "\n--- Updating packages list ---\n"
-sudo apt-get -qq update
+# BEGIN UPDATES/UPGRADES
+echo "Updating all current packages..."
+apt-get update -y
+echo "Upgrading all current packages..."
+apt-get upgrade -y
 
-echo -e "\n--- Install base packages ---\n"
-sudo apt-get -y install vim curl build-essential python-software-properties git > /dev/null 2>&1
+# INSTALL APACHE2
+echo "Installing Apache2..."
+apt-get install -y apache2
 
-echo -e "\n--- Add some repos to update our distro ---\n"
-sudo add-apt-repository ppa:ondrej/php5 > /dev/null 2>&1
-sudo echo "deb http://apt.postgresql.org/pub/repos/apt/ precise-pgdg main" >> /etc/apt/sources.list.d/pgdg.list
-wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add - > /dev/null 2>&1
-sudo add-apt-repository ppa:chris-lea/node.js > /dev/null 2>&1
+# CONFIGURE WWW DIRECTORY AS SYMLINK
+if ! [ -L /var/www ]; then
+    rm -rf /var/www
+    ln -fs /vagrant /var/www
+else
+    ln -fs /vagrant /var/www
+fi
 
-echo -e "\n--- Updating packages list ---\n"
-sudo apt-get -qq update
+if ! [ -L /home/ubuntu/bcc ]; then
+    ln -s /vagrant /home/ubuntu/bcc
+fi
 
-echo -e "\n--- Install PostgreSQL specific packages ---\n"
-sudo apt-get -y install postgresql-9.3 phppgadmin > /dev/null 2>&1
+# CONFIGURE DIRECTORY PERMISSIONS
+echo "Configuring WWW Permissions..."
+chmod 755 -R /var/www
+chmod -R o+w /var/www/storage
 
-echo -e "\n--- Setting up our PostgreSQL user and db ---\n"
+# MODIFY APACHE USER
+sed -i -e 's/APACHE_RUN_USER=www-data/APACHE_RUN_USER=ubuntu/g' /etc/apache2/envvars
+sed -i -e 's/APACHE_RUN_GROUP=www-data/APACHE_RUN_GROUP=ubuntu/g' /etc/apache2/envvars
+
+# INSTALL PHP
+echo "Installing PHP and Dependencies..."
+# apt-get install -y php7.0 php7.0-cli curl php7.0-curl php7.0-mcrypt zip unzip php7.0-zip php7.0-imap php7.0-memcache php7.0-mbstring libapache2-mod-php
+apt-get -y install php7.0 php-cli libapache2-mod-php php-curl php-gd php-mcrypt php-pgsql php-imap php-memcache php-mbstring php-dom zip unzip php-zip
+
+# INSTALL POSTGRESQL
+echo "Installing PostgreSQL..."
+apt-get install -y postgresql postgresql-contrib postgresql-client-common phppgadmin
+
+# CONFIGURE POSTGRESQL DB
+echo "Setting up our PostgreSQL user and db..."
 sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD '$DBPASSWD'"
 sudo -u postgres psql -c "CREATE USER $DBUSER WITH PASSWORD '$DBPASSWD'"
 sudo -u postgres psql -c "CREATE DATABASE $DBNAME ENCODING = 'UTF-8' LC_CTYPE = 'en_US.UTF-8' LC_COLLATE = 'en_US.UTF-8' OWNER $DBUSER TEMPLATE template0"
 
-echo -e "\n--- Installing PHP-specific packages ---\n"
-sudo apt-get -y install php5 apache2 libapache2-mod-php5 php5-curl php5-gd php5-mcrypt php5-pgsql > /dev/null 2>&1
+# INSTALL COMPOSER
+echo "Installing Composer..."
+apt-get install -y composer
 
-echo -e "\n--- Installing and configuring Xdebug ---\n"
-sudo apt-get -y install php5-xdebug > /dev/null 2>&1
-sudo cat > /etc/php5/mods-available/xdebug.ini << "EOF"
-xdebug.scream=1
-xdebug.cli_color=1
-xdebug.show_local_vars=1
-EOF
+# INSTALL NODEJS AND NPM
+echo "Installing NodeJS and NPM..."
+apt-get install -y nodejs npm
 
-echo -e "\n--- Enabling mod-rewrite ---\n"
-sudo a2enmod rewrite > /dev/null 2>&1
+# INSTALL BOWER AND GRUNT
+echo "Installing javascript components..."
+npm install -g grunt-cli yarn
 
-echo -e "\n--- Allowing Apache override to all ---\n"
-sudo sed -i "s/AllowOverride None/AllowOverride All/g" /etc/apache2/apache2.conf
-
-echo -e "\n--- Setting document root to public directory ---\n"
-sudo rm -rf /var/www
-sudo ln -fs /vagrant/public /var/www
-
-echo -e "\n--- We definitly need to see the PHP errors, turning them on ---\n"
-sudo sed -i "s/error_reporting = .*/error_reporting = E_ALL/" /etc/php5/apache2/php.ini
-sudo sed -i "s/display_errors = .*/display_errors = On/" /etc/php5/apache2/php.ini
-
-echo -e "\n--- Configure Apache to use phppgadmin ---\n"
-sudo echo -e "\n\nListen 81\n" >> /etc/apache2/ports.conf
-sudo sed -i "s/\$conf\['extra_login_security'\] = true;/\$conf\['extra_login_security'\] = false;/" /usr/share/phppgadmin/conf/config.inc.php;
-sudo cat > /etc/apache2/conf-available/phppgadmin.conf << "EOF"
-<VirtualHost *:81>
-    ServerAdmin webmaster@localhost
-    DocumentRoot /usr/share/phppgadmin
-    DirectoryIndex index.php
-    ErrorLog ${APACHE_LOG_DIR}/phppgadmin-error.log
-    CustomLog ${APACHE_LOG_DIR}/phppgadmin-access.log combined
+# CONFIGURE APACHE VHOST FILE
+echo "Configuring Apache vHost..."
+VHOST=$(cat <<EOF
+<VirtualHost *:80>
+    DocumentRoot "/var/www/public"
+    <Directory "/var/www/public">
+        Options Indexes FollowSymLinks
+        AllowOverride All
+        Require all granted
+    </Directory>
 </VirtualHost>
 EOF
-sudo a2enconf phppgadmin > /dev/null 2>&1
+)
+echo "${VHOST}" > /etc/apache2/sites-available/000-default.conf
 
-echo -e "\n--- Restarting Apache ---\n"
-sudo service apache2 restart > /dev/null 2>&1
+# ACTIVATE APACHE & PHP EXTENSIONS
+echo "Activating Apache and PHP extensions..."
+sudo phpenmod mcrypt
+sudo phpenmod mbstring
+sudo a2enmod rewrite
 
-echo -e "\n--- Installing Composer for PHP package management ---\n"
-curl --silent https://getcomposer.org/installer | php > /dev/null 2>&1
-sudo mv composer.phar /usr/local/bin/composer
+# RUN COMPOSER UPDATE
+echo "Running Composer..."
+composer config --global discard-changes true
+cd /var/www && composer update --no-scripts --prefer-dist
 
-echo -e "\n--- Installing NodeJS and NPM ---\n"
-sudo apt-get -y install nodejs > /dev/null 2>&1
-sudo curl --silent https://npmjs.org/install.sh | sh > /dev/null 2>&1
-
-echo -e "\n--- Installing javascript components ---\n"
-sudo npm install -g grunt-cli bower > /dev/null 2>&1
-
-echo -e "\n--- Updating project components and pulling latest versions ---\n"
-cd /vagrant
-sudo -u vagrant -H sh -c "composer install" > /dev/null 2>&1
-cd /vagrant/client
-sudo -u vagrant -H sh -c "npm install" > /dev/null 2>&1
-sudo -u vagrant -H sh -c "bower install angular-route restangular semantic" > /dev/null 2>&1
-sudo -u vagrant -H sh -c "grunt" > /dev/null 2>&1
-
-echo -e "\n--- Creating a symlink for future phpunit use ---\n"
-sudo ln -fs /vagrant/vendor/bin/phpunit /usr/local/bin/phpunit
+# RESTART APACHE
+echo "Restarting Apache..."
+service apache2 restart
