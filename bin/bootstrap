@@ -1,0 +1,99 @@
+#!/usr/bin/env bash
+
+###################################
+# Vagrant Provisioning Script
+###################################
+
+# DEFINE VARIABLES
+### DATABASE
+DBNAME=bcc_db
+DBUSER=bcc_dbuser
+DBPASSWD=password123
+
+# BEGIN UPDATES/UPGRADES
+echo "Updating all current packages..."
+apt-get update -y
+echo "Upgrading all current packages..."
+apt-get upgrade -y
+
+# INSTALL APACHE2
+echo "Installing Apache2..."
+apt-get install -y apache2
+
+# CONFIGURE WWW DIRECTORY AS SYMLINK
+if ! [ -L /var/www ]; then
+    rm -rf /var/www
+    ln -fs /vagrant /var/www
+else
+    ln -fs /vagrant /var/www
+fi
+
+if ! [ -L /home/ubuntu/bcc ]; then
+    ln -s /vagrant /home/ubuntu/bcc
+fi
+
+# CONFIGURE DIRECTORY PERMISSIONS
+echo "Configuring WWW Permissions..."
+chmod 755 -R /var/www
+chmod -R o+w /var/www/storage
+
+# MODIFY APACHE USER
+sed -i -e 's/APACHE_RUN_USER=www-data/APACHE_RUN_USER=ubuntu/g' /etc/apache2/envvars
+sed -i -e 's/APACHE_RUN_GROUP=www-data/APACHE_RUN_GROUP=ubuntu/g' /etc/apache2/envvars
+
+# INSTALL PHP
+echo "Installing PHP and Dependencies..."
+# apt-get install -y php7.0 php7.0-cli curl php7.0-curl php7.0-mcrypt zip unzip php7.0-zip php7.0-imap php7.0-memcache php7.0-mbstring libapache2-mod-php
+apt-get -y install php7.0 php-cli libapache2-mod-php php-curl php-gd php-mcrypt php-pgsql php-imap php-memcache php-mbstring php-dom zip unzip php-zip
+
+# INSTALL POSTGRESQL
+echo "Installing PostgreSQL..."
+apt-get install -y postgresql postgresql-contrib postgresql-client-common phppgadmin
+
+# CONFIGURE POSTGRESQL DB
+echo "Setting up our PostgreSQL user and db..."
+sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD '$DBPASSWD'"
+sudo -u postgres psql -c "CREATE USER $DBUSER WITH PASSWORD '$DBPASSWD'"
+sudo -u postgres psql -c "CREATE DATABASE $DBNAME ENCODING = 'UTF-8' LC_CTYPE = 'en_US.UTF-8' LC_COLLATE = 'en_US.UTF-8' OWNER $DBUSER TEMPLATE template0"
+
+# INSTALL COMPOSER
+echo "Installing Composer..."
+apt-get install -y composer
+
+# INSTALL NODEJS AND NPM
+echo "Installing NodeJS and NPM..."
+apt-get install -y nodejs npm
+
+# INSTALL BOWER AND GRUNT
+echo "Installing javascript components..."
+npm install -g grunt-cli yarn
+
+# CONFIGURE APACHE VHOST FILE
+echo "Configuring Apache vHost..."
+VHOST=$(cat <<EOF
+<VirtualHost *:80>
+    DocumentRoot "/var/www/public"
+    <Directory "/var/www/public">
+        Options Indexes FollowSymLinks
+        AllowOverride All
+        Require all granted
+    </Directory>
+</VirtualHost>
+EOF
+)
+echo "${VHOST}" > /etc/apache2/sites-available/000-default.conf
+
+# ACTIVATE APACHE & PHP EXTENSIONS
+echo "Activating Apache and PHP extensions..."
+sudo phpenmod mcrypt
+sudo phpenmod mbstring
+sudo a2enmod rewrite
+
+# RUN COMPOSER UPDATE
+echo "Running Composer..."
+composer config --global discard-changes true
+cd /var/www && composer update --no-scripts --prefer-dist
+
+# RESTART APACHE
+echo "Restarting Apache..."
+service apache2 restart
