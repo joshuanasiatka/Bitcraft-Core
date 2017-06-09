@@ -22,11 +22,11 @@
               <h1><i class="fa fa-sign-in"></i> <strong>Bitcraft Core</strong></h1>
           </div>
           @yield('content')
+          <p class="copyright"><br />powered by <a href='https://github.com/bitcraft-labs/' target="_blank">Bitcraft Core</a></p>
       </div>
     </div>
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}"></script>
-    <script src="{{ asset('js/auth.js') }}"></script>
 </body>
 </html>

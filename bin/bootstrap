@@ -61,11 +61,18 @@ echo "Installing Composer..."
 apt-get install -y composer
 
 # INSTALL NODEJS AND NPM
-echo "Installing NodeJS and NPM..."
-apt-get install -y nodejs npm
+echo "Installing NodeJS and NPM via NVM..."
+curl https://raw.githubusercontent.com/creationix/nvm/v0.33.2/install.sh | bash
+mv /root/.nvm /home/ubuntu/
+echo "source /home/ubuntu/.nvm/nvm.sh" >> /home/ubuntu/.profile
+source /home/ubuntu/.profile
+nvm install 6.11.0
+nvm use 6.11.0
+nvm alias default 6.11.0
+nvm use default
 
-# INSTALL BOWER AND GRUNT
-echo "Installing javascript components..."
+# INSTALL NODE COMPONENTS
+echo "Installing node components..."
 npm install -g grunt-cli yarn cross-env
 
 # CONFIGURE APACHE VHOST FILE

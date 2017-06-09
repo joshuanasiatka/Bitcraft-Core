@@ -43,6 +43,5 @@
     <div class="form-group">
         <span><a href="/login">Remember your password? Login</a></span>
     </div>
-    <p class="copyright"><br />powered by <a href='https://github.com/bitcraft-labs/' target="_blank">Bitcraft Core</a></p>
 </form>
 @endsection

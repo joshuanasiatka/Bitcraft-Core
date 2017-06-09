@@ -39,6 +39,5 @@
     <div class="form-group">
         <span><a href="/login">Already have an account? Log in</a></span>
     </div>
-    <p class="copyright"><br />powered by <a href='https://github.com/bitcraft-labs/' target="_blank">Bitcraft Core</a></p>
 </form>
 @endsection

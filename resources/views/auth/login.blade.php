@@ -33,6 +33,5 @@
         <span><a href="/password/reset">Forgot Password?</a></span><br>
         <span><a href="/register">Don't have an account? Register</a></span>
     </div>
-    <p class="copyright"><br />powered by <a href='https://github.com/bitcraft-labs/' target="_blank">Bitcraft Core</a></p>
 </form>
 @endsection

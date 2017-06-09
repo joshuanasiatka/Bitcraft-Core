@@ -96,6 +96,13 @@ form {
   margin: 0 !important;
 }
 
+@media (max-width: 1600px) {
+  .alt > .login > .login-area {
+    padding-top: 3%;
+    width: 450px;
+  }
+}
+
 @media (max-width: 1348px) {
   footer.auth {
     display: none;
