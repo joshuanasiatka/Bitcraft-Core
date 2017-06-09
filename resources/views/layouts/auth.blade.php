@@ -16,7 +16,13 @@
 </head>
 <body class="dark alt">
     <div class="login">
-        @yield('content')
+      <div class="login-area">
+          <div class="login-header">
+              <img src="/img/bcl_logo.png" width="60%" />
+              <h1><i class="fa fa-sign-in"></i> <strong>Bitcraft Core</strong></h1>
+          </div>
+          @yield('content')
+      </div>
     </div>
 
     <!-- Scripts -->
