@@ -61,12 +61,19 @@ echo "Installing Composer..."
 apt-get install -y composer
 
 # INSTALL NODEJS AND NPM
-echo "Installing NodeJS and NPM..."
-apt-get install -y nodejs npm
+echo "Installing NodeJS and NPM via NVM..."
+curl https://raw.githubusercontent.com/creationix/nvm/v0.33.2/install.sh | bash
+mv /root/.nvm /home/ubuntu/
+echo "source /home/ubuntu/.nvm/nvm.sh" >> /home/ubuntu/.profile
+source /home/ubuntu/.profile
+nvm install 6.11.0
+nvm use 6.11.0
+nvm alias default 6.11.0
+nvm use default
 
-# INSTALL BOWER AND GRUNT
-echo "Installing javascript components..."
-npm install -g grunt-cli yarn
+# INSTALL NODE COMPONENTS
+echo "Installing node components..."
+npm install -g grunt-cli yarn cross-env
 
 # CONFIGURE APACHE VHOST FILE
 echo "Configuring Apache vHost..."
@@ -90,9 +97,9 @@ sudo phpenmod mbstring
 sudo a2enmod rewrite
 
 # RUN COMPOSER UPDATE
-echo "Running Composer..."
+echo "Running Composer and NPM..."
 composer config --global discard-changes true
-cd /var/www && composer update --no-scripts --prefer-dist
+cd /var/www && composer update --no-scripts --prefer-dist && npm install
 
 # RESTART APACHE
 echo "Restarting Apache..."
