@@ -66,7 +66,7 @@ apt-get install -y nodejs npm
 
 # INSTALL BOWER AND GRUNT
 echo "Installing javascript components..."
-npm install -g grunt-cli yarn
+npm install -g grunt-cli yarn cross-env
 
 # CONFIGURE APACHE VHOST FILE
 echo "Configuring Apache vHost..."
@@ -90,9 +90,9 @@ sudo phpenmod mbstring
 sudo a2enmod rewrite
 
 # RUN COMPOSER UPDATE
-echo "Running Composer..."
+echo "Running Composer and NPM..."
 composer config --global discard-changes true
-cd /var/www && composer update --no-scripts --prefer-dist
+cd /var/www && composer update --no-scripts --prefer-dist && npm install
 
 # RESTART APACHE
 echo "Restarting Apache..."
