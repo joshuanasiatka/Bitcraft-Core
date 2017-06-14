@@ -1,7 +1,7 @@
 {
-    "name": "laravel/laravel",
-    "description": "The Laravel Framework.",
-    "keywords": ["framework", "laravel"],
+    "name": "bitcraftlabs/core",
+    "description": "The Bitcraft Core Framework.",
+    "keywords": ["framework", "bcc", "saas"],
     "license": "MIT",
     "type": "project",
     "require": {
