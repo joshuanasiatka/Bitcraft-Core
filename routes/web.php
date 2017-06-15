@@ -12,8 +12,11 @@
 */
 
 Route::get('/', function() {
-  return redirect('portal');
-});
+  if (Auth::user()->isAdmin)
+    return redirect('dashboard');
+  else
+    return redirect('portal');
+})->middleware('auth');
 
 Route::get('/portal', function () {
     return view('portal');
@@ -21,4 +24,4 @@ Route::get('/portal', function () {
 
 Auth::routes();
 
-Route::get('/dashboard', 'DashboardController@index')->name('dashboard')->middleware('admin');
+Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
