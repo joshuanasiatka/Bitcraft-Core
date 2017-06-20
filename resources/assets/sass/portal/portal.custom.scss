@@ -1,0 +1,90 @@
+// Variables
+@import "../variables";
+
+// Custom Styles
+// options are:
+//		$primary-red // $secondary-red
+//		$primary-blue // $secondary-blue
+
+// TODO: Integrate with DB and pull company settings
+$primary: $primary-red;
+$secondary: $secondary-red;
+
+a,
+a:link,
+a:hover,
+a:active,
+a:visited,
+.bbp-author-name {
+	color: $primary;
+	text-decoration: none;
+}
+
+.site-title {
+	margin-top: 0;
+}
+
+.center {
+	text-align: center;
+}
+.center.alert {
+	color: $primary;
+}
+
+#site-header {
+	background: $secondary;
+}
+
+@media screen and (max-width: 768px) {
+	#nav-primary-menu {
+		background: $secondary;
+	}
+}
+
+#site-header,
+#site-header a,
+#site-header a:visited,
+#site-header a:hover,
+#nav-primary button {
+	color: #fff;
+}
+
+#page-header {
+	background: $primary
+}
+
+#page-header,
+#page-header a,
+#page-header a:visited,
+#page-header a:hover,
+#page-header #page-header-title,
+.site-title {
+	color: #fff;
+}
+
+#page-header #page-header-tagline {
+	color: rgba(255, 255, 255, 0.9);
+}
+
+#ht-site-container.ht-layout-boxed {
+	max-width: 1200px;
+	box-shadow: 0 0 55px rgba(0, 0, 0, 0.15);
+}
+
+#homepage-features .hf-block i {
+	color: $primary;
+}
+
+.hkb_widget_exit__btn {
+	background: $primary;
+}
+
+div.ht-grid.ht-grid-gutter-20.portal-grid {
+	// TODO: Center the Grid Panels so they're not left-justified
+	margin: 0 auto;
+	text-align: center;
+}
+
+img.avatar.preview {
+	width: 60px;
+}

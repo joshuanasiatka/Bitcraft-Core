@@ -2,5 +2,8 @@
   "/js/app.js": "/js/app.js",
   "/css/app.css": "/css/app.css",
   "/css/auth.css": "/css/auth.css",
-  "/js/auth.js": "/js/auth.js"
+  "/js/auth.js": "/js/auth.js",
+  "/css/portal.kb.css": "/css/portal.kb.css",
+  "/css/portal.custom.css": "/css/portal.custom.css",
+  "/css/portal.css": "/css/portal.css"
 }

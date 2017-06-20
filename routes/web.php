@@ -22,6 +22,18 @@ Route::get('/portal', function () {
     return view('portal');
 })->middleware('auth');
 
+Route::get('/portal/knowledge-base', function () {
+    return view('portal_kb');
+})->middleware('auth');
+
+Route::get('/portal/kb/{name}', function($name = 'Unknown Article') {
+    return view('portal_kb_article');
+})->where('name', '([A-Za-z0-9\-\_]+)')->middleware('auth');
+
+Route::get('/portal/kb/categories/{name}', function($name = 'Unknown Category') {
+    return view('portal_kb_cat');
+})->where('name', '([A-Za-z0-9\-\_]+)')->middleware('auth');
+
 Auth::routes();
 
 Route::get('/dashboard', 'DashboardController@index')->name('dashboard');

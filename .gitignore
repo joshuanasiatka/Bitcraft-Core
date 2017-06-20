@@ -25,3 +25,7 @@ public/hot
 storage/*.key
 ! .env.example
 .env
+
+# Rendered Files
+public/css
+public/js
