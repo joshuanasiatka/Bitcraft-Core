@@ -339,6 +339,10 @@ body {
                 padding: 0;
             }
 
+            .al-sidebar-list-item:hover {
+
+            }
+
             .al-sidebar-list-item.selected:not(.with-sub-menu) {
                 background-color: $background-color-selected;
 
@@ -382,6 +386,14 @@ body {
                     transition: transform .2s linear,-webkit-transform .2s linear;
                 }
             }
+
+            a.al-sidebar-list-link:hover {
+                color: $background-color-selected;
+
+                b {
+                    color: $background-color-selected;
+                }
+            }
         }
 
         .al-sidebar-sublist {
@@ -422,6 +434,7 @@ body {
             .content-top {
                 padding-top: 13px;
                 padding-bottom: 27px;
+                margin-bottom: 25px;
 
                 h1.al-title {
                     font-weight: 700;
@@ -437,7 +450,7 @@ body {
                 .al-breadcrumb {
                     background: 0 0;
                     color: $main-h1-title;
-                    padding: 11px 0 0;
+                    padding: 0;
                     margin: 0;
                     float: right;
 

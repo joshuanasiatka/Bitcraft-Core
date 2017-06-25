@@ -27,6 +27,6 @@ mix.webpackConfig({
 });
 
 
-mix.js('resources/assets/js/app.ts', 'public/js')
+mix.js('resources/assets/ts/app.ts', 'public/js')
    .sass('resources/assets/sass/app.scss', 'public/css')
    .sass('resources/assets/sass/auth.scss', 'public/css');
