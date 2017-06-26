@@ -3,7 +3,7 @@ import jquery from 'jquery';
 export default class Sidebar {
 
     $ : Object;
-    sidebar : HTMLElement;
+    sidebar : Element;
 
     constructor () {
         this.$ = jquery;

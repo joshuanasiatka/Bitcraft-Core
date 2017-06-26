@@ -12,11 +12,16 @@
 
 /* --------- General Body --------- */
 body {
+
     a {
         color: $main-anchor;
         -webkit-transition: color .2s ease;
         transition: color .2s ease;
         text-decoration: none !important;
+    }
+
+    a:hover {
+        color: $anchor-hover;
     }
 
     .dropdown-menu {
@@ -57,7 +62,7 @@ body {
             color: $logo-color;
             display: block;
             font-size: 24px;
-            font-family: Roboto,sans-serif;
+            font-family: $fonts;
             white-space: nowrap;
             float: left;
             line-height: 60px;
@@ -305,6 +310,10 @@ body {
                         animation-iteration-count: infinite;
                         opacity: 0;
                     }
+                }
+
+                a:hover {
+                    color: $notifications-color;
                 }
             }
 

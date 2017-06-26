@@ -18,7 +18,7 @@
 <body>
     <div id="app">
         <nav class="page-top">
-            <a href="#" class="al-logo"><span>Bitcraft</span> Core</a>
+            <a href="#" class="al-logo"><span>Bitcraft</span>Core</a>
             <a class="collapse-menu-link"><i class="fa fa-bars"></i></a>
             <div class="search">
                 <i class="fa fa-search"></i>
@@ -27,7 +27,7 @@
             <div class="user-profile">
                 <div class="al-user profile dropdown">
                     <a href="" class="profile-toggle-link dropdown-toggle">
-                        <img src="{{ asset('img/default-profile.jpg')}}" alt="">
+                        <img src="{{ asset('img/default-profile.jpg') }}" alt="">
                     </a>
                     <ul class="top-dropdown-menu profile-dropdown dropdown-menu">
                         <li><i class="dropdown-arr"></i></li>
@@ -261,7 +261,10 @@
         </aside>
         @yield('content')
     </div>
-
+    <script type="text/javascript">
+        // Server Global Variable
+        var V = {};
+    </script>
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}"></script>
 </body>

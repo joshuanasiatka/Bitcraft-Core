@@ -1,8 +1,13 @@
-export default class Search {
+import { IElement } from './IElement';
 
-    private searchbar : Element;
+export default class Search implements IElement {
+
+    private element : HTMLElement;
+    private state : object;
+    private returnable : object;
 
     constructor () {
-        this.searchbar = document.getElementsByClassName('search')[0];
+        this.element = document.getElementsByClassName('search')[0];
+        this.state = {};
     }
 }

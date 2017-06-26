@@ -1,11 +1,10 @@
 import jquery from 'jquery';
-import axios from 'axios';
 
 export default class State {
 
-    private V : object;
-    private app : HTMLElement;
-    private axios;
+    private V        : object;
+    private app      : HTMLElement;
+    private elements : object;
 
     /**
      * Constructs server object for other modules
@@ -13,7 +12,7 @@ export default class State {
      * @constructor
      */
     constructor (V ?: object) {
-        this.V = V || {};
+        this.V   = V || {};
         this.app = document.getElementById('app');
     }
 
@@ -29,4 +28,22 @@ export default class State {
         this.V[key] = value;
     }
 
+    public addElements (elements : object) : void {
+        this.elements = elements;
+        // Add data binding here for elements
+        this.bindElements();
+    }
+
+    private bindElements () : void {
+        for (let element in this.elements) {
+            this.elements[element].ref.element.addEventListener('change', this, false);
+        }
+    }
+
+    private handleEvent (event) : void {
+        console.log(event);
+        switch (event.type) {
+            case 'change' : break;
+        }
+    }
 }
