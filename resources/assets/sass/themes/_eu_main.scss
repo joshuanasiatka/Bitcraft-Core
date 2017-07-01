@@ -432,6 +432,14 @@ body {
         }
     }
 
+    aside.al-sidebar.sidebar-full {
+        width: 52px;
+
+        b.fa {
+            display: none !important;
+        }
+    }
+
     .al-main {
         margin-left: 180px;
         padding: 66px 0 34px;
@@ -511,5 +519,9 @@ body {
             font-weight: 400;
             opacity: .9;
         }
+    }
+
+    .al-main.full-size {
+        margin-left: 50px;
     }
 }

@@ -1,4 +1,5 @@
-import jquery from 'jquery';
+import { init } from './Action';
+import Constants from './Constants';
 
 export default class State {
 
@@ -12,8 +13,9 @@ export default class State {
      * @constructor
      */
     constructor (V ?: object) {
-        this.V   = V || {};
-        this.app = document.getElementById('app');
+        this.V       = V || {};
+        this.app     = document.getElementById('app');
+        this.V.store = localStorage;
     }
 
     public getServerContext () : object {
@@ -30,20 +32,29 @@ export default class State {
 
     public addElements (elements : object) : void {
         this.elements = elements;
+        this.elements['app'] = this.app;
         // Add data binding here for elements
         this.bindElements();
+        // Pass state to actions
+        init(this.elements);
     }
 
     private bindElements () : void {
         for (let element in this.elements) {
-            this.elements[element].ref.element.addEventListener('change', this, false);
+            // this.elements[element].ref.element.addEventListener('change', this, false);
         }
     }
 
-    private handleEvent (event) : void {
-        console.log(event);
-        switch (event.type) {
-            case 'change' : break;
+    /**
+     * Sets up initial states for components
+     */
+    public init () : void {
+        if (this.getServerContext().store) {
+            let store     = this.getServerContext().store;
+            let constants = Constants();
+            console.log(store.sidebar_size);
+            if (store.sidebar_size === constants.sidebar_size) this.elements.navbar.ref.navbarResize();
         }
     }
+
 }

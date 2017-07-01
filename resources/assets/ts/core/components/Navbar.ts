@@ -1,17 +1,18 @@
-import { IElement } from './IElement';
+import { IElement }             from '../IElement';
+import { changeSidebarDisplay } from '../Action';
 
 export default class Navbar implements IElement {
 
-    private element : HTMLElement;
-    private state   : object;
+    element : HTMLElement;
+    state   : object;
 
     constructor (state ?: object) {
         if (state === undefined) state = {};
         this.element = document.querySelector('nav');
         this.state = state;
 
-        if (this.state.size) {
-            this.navbarResize();
+        if (this.state.size === 'full') {
+            // this.navbarResize();
         } else {
             this.state.size = 'default';
         }
@@ -20,17 +21,8 @@ export default class Navbar implements IElement {
     }
 
     public navbarResize () : void {
-        if (this.state.size === 'full') {
-            this.element.classList.remove('navbar-full-size');
-            this.state.size = 'default';
-        } else if (this.state.size === 'default') {
-            this.state.size = 'full';
-            this.element.classList.add('navbar-full-size');
-        }
-
-        return {
-
-        };
+        changeSidebarDisplay(this.state.size);
+        this.state.size = (this.state.size === 'default' ? 'full' : 'default');
     }
 
     private setClickableResize () : void {
