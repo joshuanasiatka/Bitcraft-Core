@@ -8,7 +8,6 @@ export function init (state ?: object) {
 }
 
 export function changeSidebarDisplay (size) {
-    console.log('called');
     State.sidebar.ref.changeSidebarDisplay(size);
     // Adds or removes class based on state change from al-main
     (size === 'full') ? State.app.children[2].classList.add('full-size') : State.app.children[2].classList.remove('full-size');

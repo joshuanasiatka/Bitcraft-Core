@@ -52,8 +52,7 @@ export default class State {
         if (this.getServerContext().store) {
             let store     = this.getServerContext().store;
             let constants = Constants();
-            console.log(store.sidebar_size);
-            if (store.sidebar_size === constants.sidebar_size) this.elements.navbar.ref.navbarResize();
+            if (store.sidebar_size === constants.sidebar_size) this.elements.navbar.ref.navbarResize(true);
         }
     }
 

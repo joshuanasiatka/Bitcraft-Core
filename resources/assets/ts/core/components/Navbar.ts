@@ -20,9 +20,12 @@ export default class Navbar implements IElement {
         this.setClickableResize();
     }
 
-    public navbarResize () : void {
+    public navbarResize (init ?: boolean) : void {
+        if (init.type === 'click') {
+            this.state.size = (this.state.size === 'default' ? 'full' : 'default');
+        }
         changeSidebarDisplay(this.state.size);
-        this.state.size = (this.state.size === 'default' ? 'full' : 'default');
+        // this.state.size = (this.state.size === 'default' ? 'full' : 'default');
     }
 
     private setClickableResize () : void {

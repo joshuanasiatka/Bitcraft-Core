@@ -21,4 +21,5 @@ state.addElements({
     }
 });
 
+// Set global stored 
 state.init();
